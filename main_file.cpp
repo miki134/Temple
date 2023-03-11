@@ -11,17 +11,15 @@
 #include "allmodels.h"
 #include "lodepng.h"
 #include "shaderprogram.h"
-
+#include "Draw.h"
 
 float speed = 0;
 
-//Procedura obsługi błędów
 void error_callback(int error, const char* description) {
 	fputs(description, stderr);
 }
 
-void key_callback(GLFWwindow* window, int key,
-	int scancode, int action, int mods) {
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	if (action == GLFW_PRESS) {
 		if (key == GLFW_KEY_A) printf("A \n");
 		if (key == GLFW_KEY_D) printf("D \n");
@@ -46,8 +44,8 @@ void key_callback(GLFWwindow* window, int key,
 //Procedura inicjująca
 void initOpenGLProgram(GLFWwindow* window) {
 	initShaders();
-	glClearColor(0, 0, 0, 1);//Ustaw czarny kolor czyszczenia ekranu
-	//************Tutaj umieszczaj kod, który należy wykonać raz, na początku programu************
+	glClearColor(0, 0, 0, 1);
+
 	glEnable(GL_DEPTH_TEST);
 	glfwSetKeyCallback(window, key_callback);
 }
@@ -56,51 +54,20 @@ void initOpenGLProgram(GLFWwindow* window) {
 //Zwolnienie zasobów zajętych przez program
 void freeOpenGLProgram(GLFWwindow* window) {
 	freeShaders();
-	//************Tutaj umieszczaj kod, który należy wykonać po zakończeniu pętli głównej************
 }
 
 void drawScene(GLFWwindow* window, float angle) {
-	//************Tutaj umieszczaj kod rysujący obraz******************l
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 	spLambert->use();
 
-	glm::mat4 M = glm::mat4(1.0f);
-	glm::mat4 M1;
-	glm::mat4 M2;
-
-	M1 = glm::translate(M, glm::vec3(1.0f, 0.0f, 0.0f));
-	M2 = glm::translate(M, glm::vec3(-1.0f, 0.0f, 0.0f));
-
-	M1 = glm::rotate(M1, angle, glm::vec3(0.0f, 1.0f, 0.0f));
-	M2 = glm::rotate(M2, -angle, glm::vec3(0.0f, 1.0f, 0.0f));
-
-	glm::mat4 V = glm::lookAt(
-		glm::vec3(0.0f, 0.0f, -5.0f),
-		glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(0.0f, 1.0f, 0.0f));
-
-	glm::mat4 P = glm::perspective(glm::radians(50.0f), 1.0f, 1.0f, 50.0f);
-
-	//glUniform4f(spConstant->u("color"), 1, 0, 0, 1);
-	glUniform4f(spLambert->u("color"), 0, 1, 0, 1);
-	glUniformMatrix4fv(spLambert->u("P"), 1, false, glm::value_ptr(P));
-	glUniformMatrix4fv(spLambert->u("V"), 1, false, glm::value_ptr(V));
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(M1));
-	Models::torus.drawSolid();
-
-	glUniform4f(spLambert->u("color"), 1, 0, 0, 1);
-	glUniformMatrix4fv(spLambert->u("P"), 1, false, glm::value_ptr(P));
-	glUniformMatrix4fv(spLambert->u("V"), 1, false, glm::value_ptr(V));
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(M2));
-	Models::torus.drawSolid();
+	Draw::rotatingTwoToruses(angle);
 
 	glfwSwapBuffers(window);
 }
 
 int main(void)
 {
-	GLFWwindow* window; //Wskaźnik na obiekt reprezentujący okno
+	GLFWwindow* window;
 
 	glfwSetErrorCallback(error_callback);//Zarejestruj procedurę obsługi błędów
 
@@ -109,16 +76,16 @@ int main(void)
 		exit(EXIT_FAILURE);
 	}
 
-	window = glfwCreateWindow(500, 500, "OpenGL", NULL, NULL);  //Utwórz okno 500x500 o tytule "OpenGL" i kontekst OpenGL.
+	window = glfwCreateWindow(500, 500, "OpenGL", NULL, NULL);
 
-	if (!window) //Jeżeli okna nie udało się utworzyć, to zamknij program
+	if (!window)
 	{
 		fprintf(stderr, "Nie można utworzyć okna.\n");
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}
 
-	glfwMakeContextCurrent(window); //Od tego momentu kontekst okna staje się aktywny i polecenia OpenGL będą dotyczyć właśnie jego.
+	glfwMakeContextCurrent(window);
 	glfwSwapInterval(1); //Czekaj na 1 powrót plamki przed pokazaniem ukrytego bufora
 
 	if (glewInit() != GLEW_OK) { //Zainicjuj bibliotekę GLEW
@@ -126,17 +93,18 @@ int main(void)
 		exit(EXIT_FAILURE);
 	}
 
-	initOpenGLProgram(window); //Operacje inicjujące
+	initOpenGLProgram(window);
 
 
-	float angle = 0; //Aktualny kąt obrotu obiektu
-	glfwSetTime(0); //Wyzeruj timer
+	float angle = 0;
+	glfwSetTime(0);
 	//Główna pętla
 	while (!glfwWindowShouldClose(window)) //Tak długo jak okno nie powinno zostać zamknięte
 	{
-		angle += speed * glfwGetTime(); //Oblicz przyrost kąta po obrocie
-		glfwSetTime(0); //Wyzeruj timer
-		drawScene(window, angle); //Wykonaj procedurę rysującą
+		angle += speed * glfwGetTime();
+		glfwSetTime(0);
+		drawScene(window, angle);
+
 		glfwPollEvents(); //Wykonaj procedury callback w zalezności od zdarzeń jakie zaszły.
 	}
 
