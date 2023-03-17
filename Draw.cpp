@@ -228,3 +228,102 @@ void Draw::rotatingTwoTorusesWithSquaresScaled(float angle)
     glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(M2));
     Models::torus.drawSolid();
 }
+
+void Draw::rotatingSixToruses(float angle)
+{
+    glm::mat4 V = glm::lookAt(
+        glm::vec3(0.0f, 0.0f, -10.0f),
+        glm::vec3(0.0f, 0.0f, 0.0f),
+        glm::vec3(0.0f, 1.0f, 0.0f));
+
+    glm::mat4 P = glm::perspective(glm::radians(50.0f), 1.0f, 1.0f, 50.0f);
+
+    glUniformMatrix4fv(spLambert->u("P"), 1, false, glm::value_ptr(P));
+    glUniformMatrix4fv(spLambert->u("V"), 1, false, glm::value_ptr(V));
+
+    glm::mat4 M = glm::mat4(1.0f);
+    glm::mat4 M1 = M;
+
+    std::vector<glm::vec3> tab = {
+        glm::vec3(2.0f, 0.0f, 0.0f),
+        glm::vec3(1.0f, 2.0f, 0.0f),
+        glm::vec3(-1.0f, 2.0f, 0.0f),
+        glm::vec3(-2.0f, 0.0f, 0.0f),
+        glm::vec3(1.0f, -2.0f, 0.0f),
+        glm::vec3(-1.0f, -2.0f, 0.0f), };
+
+    for (int y = 0; y < 6; y++)
+    {
+        M1 = glm::translate(M, tab[y]);
+
+        for (int i = 0; i < 12; i++)
+        {
+            glm::mat4 Mx = M1;
+
+            Mx = glm::rotate(Mx, (i + 1)*(PI / 6) + angle +  (y%2==0 ? PI / 12 : 0), glm::vec3(0.0f, 0.0f, y%2==0 ? -1.0f : 1.0f));
+            Mx = glm::translate(Mx, glm::vec3(1.0f, 0.0f, 0.0f));
+
+            Mx = glm::rotate(Mx, angle, glm::vec3(1.0f, 1.0f, 1.0f));
+
+            Mx = glm::scale(Mx, glm::vec3(0.1f, 0.1f, 0.1f));
+
+            glUniform4f(spLambert->u("color"), 1, 0, 0, 1);
+            glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mx));
+            Models::cube.drawSolid();
+        }
+
+        glUniform4f(spLambert->u("color"), 0, 1, 0, 1);
+        glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(M1));
+        Models::torus.drawSolid();
+    }
+}
+
+void Draw::rotatingSixTorusesVertical(float angle)
+{
+    glm::mat4 V = glm::lookAt(
+        glm::vec3(0.0f, 0.0f, -10.0f),
+        glm::vec3(0.0f, 0.0f, 0.0f),
+        glm::vec3(0.0f, 1.0f, 0.0f));
+
+    glm::mat4 P = glm::perspective(glm::radians(50.0f), 1.0f, 1.0f, 50.0f);
+
+    glUniformMatrix4fv(spLambert->u("P"), 1, false, glm::value_ptr(P));
+    glUniformMatrix4fv(spLambert->u("V"), 1, false, glm::value_ptr(V));
+
+    glm::mat4 M = glm::mat4(1.0f);
+
+    std::vector<glm::vec3> tab = {
+        glm::vec3(2.0f, 0.0f, 1.0f),
+        glm::vec3(1.0f, 2.0f, 1.0f),
+        glm::vec3(-1.0f, 2.0f, 0.0f),
+        glm::vec3(-2.0f, 0.0f, 0.0f),
+        glm::vec3(1.0f, -2.0f, 0.0f),
+        glm::vec3(-1.0f, -2.0f, 0.0f), };
+
+    for (int y = 0; y < 6; y++)
+    {
+        glm::mat4 M1 = M;
+        M1 = glm::translate(M1, tab[y]);
+        M1 = glm::rotate(M1, PI/2, glm::vec3(1.0f, 0.0f, 0.0f));
+
+        for (int i = 0; i < 12; i++)
+        {
+            glm::mat4 Mx = M1;
+
+            Mx = glm::rotate(Mx, (i + 1)*(PI / 6) + angle + (y % 2 == 0 ? PI / 12 : 0), glm::vec3(0.0f, 0.0f, y % 2 == 0 ? -1.0f : 1.0f));
+            Mx = glm::translate(Mx, glm::vec3(1.0f, 0.0f, 0.0f));
+
+            Mx = glm::rotate(Mx, angle, glm::vec3(1.0f, 1.0f, 1.0f));
+
+            Mx = glm::scale(Mx, glm::vec3(0.1f, 0.1f, 0.1f));
+
+            glUniform4f(spLambert->u("color"), 1, 0, 0, 1);
+            glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mx));
+            Models::cube.drawSolid();
+        }
+
+        glUniform4f(spLambert->u("color"), 0, 1, 0, 1);
+        glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(M1));
+        Models::torus.drawSolid();
+    }
+}

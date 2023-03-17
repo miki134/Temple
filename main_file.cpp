@@ -60,7 +60,7 @@ void drawScene(GLFWwindow* window, float angle) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	spLambert->use();
 
-	Draw::rotatingTwoTorusesWithSquares(angle);
+	Draw::rotatingSixTorusesVertical(angle);
 
 	glfwSwapBuffers(window);
 }
