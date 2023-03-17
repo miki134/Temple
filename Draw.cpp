@@ -56,29 +56,48 @@ void Draw::rotatingSolarSystem(float angle)
 	glm::mat4 M = glm::mat4(1.0f);
 	glm::mat4 Msun = M;
 	glm::mat4 Mplanet = M;
-	glm::mat4 M3 = M;
+	glm::mat4 Moon = M;
+	glm::mat4 Mplanet2 = M;
 
 	Msun = glm::translate(Msun, glm::vec3(0.0f, 0.0f, 0.0f));
 	Msun = glm::rotate(Msun, angle, glm::vec3(0.0f, 1.0f, 0.0f));
-	Msun = glm::scale(Msun, glm::vec3(0.7f, 0.7f, 0.7f));
+	//Msun = glm::scale(Msun, glm::vec3(0.7f, 0.7f, 0.7f));
 
 	glUniform4f(spLambert->u("color"), 1, 1, 0, 1);
 	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Msun));
-	Models::sphere.drawSolid();
+    static Models::Sphere sun(0.5, 36, 36);
+    sun.drawSolid();
+    //Models::sphere.drawSolid();
 
 	Mplanet = glm::rotate(Mplanet, -angle, glm::vec3(0.0f, 1.0f, 0.0f));
-	Mplanet = glm::translate(Mplanet, glm::vec3(-1.5f, 0.0f, 0.0f));
-	Mplanet = glm::scale(Mplanet, glm::vec3(0.3f, 0.3f, 0.3f));
+	Mplanet = glm::translate(Mplanet, glm::vec3(1.5f, 0.0f, 0.0f));
+	//Mplanet = glm::scale(Mplanet, glm::vec3(0.3f, 0.3f, 0.3f));
 
-	glUniform4f(spLambert->u("color"), 0, 0, 1, 1);
+	glUniform4f(spLambert->u("color"), 0, 1, 0, 1);
 	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mplanet));
-	Models::sphere.drawSolid();
+	//Models::sphere.drawSolid();
+    static Models::Sphere planet1(0.2, 36, 36);
+    planet1.drawSolid();
 
-	M3 = glm::rotate(Mplanet, angle, glm::vec3(0.0f, -1.0f, 0.0f));
-	M3 = glm::translate(M3, glm::vec3(1.5f, 0.0f, 0.0f));
-	M3 = glm::scale(M3, glm::vec3(0.5f, 0.5f, 0.5f));
+    Moon = glm::rotate(Mplanet, angle, glm::vec3(0.0f, -1.0f, 0.0f));
+    Moon = glm::translate(Moon, glm::vec3(0.5f, 0.0f, 0.0f));
+	//M3 = glm::scale(M3, glm::vec3(0.5f, 0.5f, 0.5f));
 
 	glUniform4f(spLambert->u("color"), 1, 1, 1, 1);
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(M3));
-	Models::sphere.drawSolid();
+	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Moon));
+	//Models::sphere.drawSolid();
+    static Models::Sphere moon1(0.1, 36, 36);
+    moon1.drawSolid();
+
+    Mplanet2 = glm::rotate(Mplanet2, -angle, glm::vec3(1.0f, 0.0f, 1.0f));
+    Mplanet2 = glm::translate(Mplanet2, glm::vec3(0.0f, 1.5f, 0.0f));
+    //Mplanet2 = glm::rotate(Mplanet2, angle, glm::vec3(0.0f, 1.0f, 0.0f));
+    //Mplanet = glm::scale(Mplanet, glm::vec3(0.3f, 0.3f, 0.3f));
+
+    glUniform4f(spLambert->u("color"), 0, 0, 1, 1);
+    glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mplanet2));
+    //Models::sphere.drawSolid();
+    static Models::Sphere planet2(0.2, 36, 36);
+    planet2.drawSolid();
+
 }
