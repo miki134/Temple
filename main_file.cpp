@@ -14,6 +14,7 @@
 #include "Draw.h"
 
 float speed = 0;
+float turn = 0;
 
 void error_callback(int error, const char* description) {
 	fputs(description, stderr);
@@ -21,8 +22,14 @@ void error_callback(int error, const char* description) {
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	if (action == GLFW_PRESS) {
-		if (key == GLFW_KEY_A) printf("A \n");
-		if (key == GLFW_KEY_D) printf("D \n");
+        if (key == GLFW_KEY_A) {
+            turn = PI / 6;
+            printf("A \n");
+        }
+        if (key == GLFW_KEY_D) {
+            turn = -PI / 6;
+            printf("D \n");
+        }
 		if (key == GLFW_KEY_LEFT) {
 			speed -= PI;
 			printf("LEFT \n");
@@ -36,7 +43,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	}
 	if (action == GLFW_RELEASE) {
 		if (key == GLFW_KEY_W) printf("puszczone W\n");
-
+        if (key == GLFW_KEY_LEFT || key == GLFW_KEY_RIGHT) speed = 0;
+        if (key == GLFW_KEY_A || key == GLFW_KEY_D) turn = 0;
 		speed = 0;
 	}
 }
@@ -56,13 +64,12 @@ void freeOpenGLProgram(GLFWwindow* window) {
 	freeShaders();
 }
 
-void drawScene(GLFWwindow* window, float angle) {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	spLambert->use();
+void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    spLambert->use();
+    Draw::car(angle);
 
-	Draw::rotatingSixTorusesVertical(angle);
-
-	glfwSwapBuffers(window);
+    glfwSwapBuffers(window);
 }
 
 int main(void)
@@ -97,13 +104,17 @@ int main(void)
 
 
 	float angle = 0;
+    float wheelAngle = 0;
+
 	glfwSetTime(0);
 	//Główna pętla
 	while (!glfwWindowShouldClose(window)) //Tak długo jak okno nie powinno zostać zamknięte
 	{
 		angle += speed * glfwGetTime();
+        wheelAngle += -PI / 6 * glfwGetTime();
 		glfwSetTime(0);
-		drawScene(window, angle);
+        Draw::carWithTurningWeels(window, angle, turn, wheelAngle);
+        drawScene(window, angle, wheelAngle);
 
 		glfwPollEvents(); //Wykonaj procedury callback w zalezności od zdarzeń jakie zaszły.
 	}
