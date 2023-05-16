@@ -376,7 +376,7 @@ void Draw::carWithTurningWeels(GLFWwindow* window, float angle, float turn, floa
     Models::Torus carWheel(0.3, 0.1, 12, 12);
 
     glm::mat4 P = glm::perspective(glm::radians(50.0f), 1.0f, 1.0f, 50.0f); //Wyliczenie macierzy rzutowania
-    glm::mat4 V = glm::lookAt(glm::vec3(0.0f, 2.0f, -7.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)); //Wyliczenie macierzy widoku
+    glm::mat4 V = glm::lookAt(glm::vec3(0.0f, -12.0f, 0.5f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)); //Wyliczenie macierzy widoku
 
     spLambert->use();//Aktywacja programu cieniuj¹cego
     glUniformMatrix4fv(spLambert->u("P"), 1, false, glm::value_ptr(P)); //Za³adowanie macierzy rzutowania do programu cieniuj¹cego
