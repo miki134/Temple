@@ -5,10 +5,7 @@
 
 namespace Models {
 
-    using namespace std;
-    using namespace glm;
-
-    class Temple : public Model {
+    class Temple {
 
     public:
         Temple();
@@ -18,12 +15,11 @@ namespace Models {
 
     private:
 
-        std::vector<float> internalVertices;
-        std::vector<unsigned int> internalFaceNormals;
-        std::vector<float> internalVertexNormals;
+        unsigned int meshesNumber;
 
-        void buildTemple(float R, float r, float mainDivs, float tubeDivs);
-
+        std::vector<std::vector<glm::vec4>> internalVertices;
+        std::vector<std::vector<glm::vec4>> internalNormals;
+        std::vector<std::vector<glm::vec4>> internalTexCoords;
     };
 
     extern Temple temple;

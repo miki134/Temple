@@ -5,6 +5,7 @@
 #include <assimp/mesh.h>
 #include <assimp/scene.h>
 
+#include<vector>
 
 namespace Models {
 
@@ -12,48 +13,52 @@ namespace Models {
 
     Temple::Temple()
     {
-        std::string filename = "./model/kostka2.obj";
+        std::string filename = "./model/temple.obj";
 
         Assimp::Importer importer;
-        const aiScene *scene = importer.ReadFile(filename, aiProcessPreset_TargetRealtime_Fast);
-        if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
-            printf("Blad podczas wczytywania pliku\n");
+        const aiScene* scene = importer.ReadFile(filename, aiProcess_Triangulate | aiProcess_FlipUVs);
+
+        if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+        {
+            fprintf(stderr, "Nie mo¿na wczytaæ pliku OBJ.\n");
+            exit(EXIT_FAILURE);
         }
 
-        aiMesh* mesh = scene->mMeshes[0];
-        printf("scene->mNumMeshes = %d\n", scene->mNumMeshes);
+        meshesNumber = scene->mNumMeshes;
+        
+        for (unsigned int i = 0; i < scene->mNumMeshes; i++)
+        {
+            aiMesh* mesh = scene->mMeshes[i];
 
-        // Pobierz wierzcho³ki
-        for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
-            aiVector3D vertex = mesh->mVertices[i];
-            internalVertices.push_back(vertex.x);
-            internalVertices.push_back(vertex.y);
-            internalVertices.push_back(vertex.z);
-        }
+            std::vector<glm::vec4> vertices;
+            std::vector<glm::vec4> normals;
+            std::vector<glm::vec4> texCoords;
 
-        // Pobierz indeksy
-        for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
-            aiFace face = mesh->mFaces[i];
-            for (unsigned int j = 0; j < face.mNumIndices; j++) {
-                internalFaceNormals.push_back(face.mIndices[j]);
+            for (unsigned int j = 0; j < mesh->mNumVertices; j++)
+            {
+                aiVector3D pos = mesh->mVertices[j];
+                glm::vec4 vertex(pos.x, pos.y, pos.z, 1.0f);
+                vertices.push_back(vertex);
+
+                if (mesh->HasNormals())
+                {
+                    aiVector3D normal = mesh->mNormals[j];
+                    glm::vec4 normalVec(normal.x, normal.y, normal.z, 0.0f);
+                    normals.push_back(normalVec);
+                }
+
+                if (mesh->HasTextureCoords(0))
+                {
+                    aiVector3D texCoord = mesh->mTextureCoords[0][j];
+                    glm::vec4 texCoordVec(texCoord.x, texCoord.y, texCoord.z, 0.0f);
+                    texCoords.push_back(texCoordVec);
+                }
             }
+
+            internalVertices.push_back(vertices);
+            internalNormals.push_back(normals);
+            internalTexCoords.push_back(texCoords);
         }
-
-        // Pobierz normalne
-        if (mesh->HasNormals()) {
-            for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
-                aiVector3D normal = mesh->mNormals[i];
-                internalVertexNormals.push_back(normal.x);
-                internalVertexNormals.push_back(normal.y);
-                internalVertexNormals.push_back(normal.z);
-            }
-        }
-
-        printf("internalVertices size: %d\n", internalVertices.size());
-        printf("internalFaceNormals size: %d\n", internalFaceNormals.size());
-        printf("internalVertexNormals size: %d\n", internalVertexNormals.size());
-
-        buildTemple(0, 0, 0, 0);
     }
 
     Temple::Temple(float R, float r, float mainDivs, float tubeDivs)
@@ -66,33 +71,25 @@ namespace Models {
 
     void Temple::drawSolid(bool smooth) {
 
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
-        glEnableVertexAttribArray(2);
-        //glEnableVertexAttribArray(3);
+        for (unsigned int i = 0; i < meshesNumber; i++)
+        {
+            std::vector<glm::vec4> vertices = internalVertices[i];
+            std::vector<glm::vec4> normals = internalNormals[i];
+            std::vector<glm::vec4> texCoords = internalTexCoords[i];
 
+            glEnableVertexAttribArray(0);
+            glEnableVertexAttribArray(1);
+            glEnableVertexAttribArray(2);
 
-        glVertexAttribPointer(0, 4, GL_FLOAT, false, 0, vertices);
-        if (!smooth) glVertexAttribPointer(1, 4, GL_FLOAT, false, 0, normals);
-        else glVertexAttribPointer(1, 4, GL_FLOAT, false, 0, vertexNormals);
-        glVertexAttribPointer(2, 4, GL_FLOAT, false, 0, texCoords);
-        //glVertexAttribPointer(3,4,GL_FLOAT,false,0,CubeInternal::colors);
+            glVertexAttribPointer(0, 4, GL_FLOAT, false, 0, vertices.data());
+            glVertexAttribPointer(1, 4, GL_FLOAT, false, 0, normals.data());
+            glVertexAttribPointer(2, 4, GL_FLOAT, false, 0, texCoords.data());
 
-        glDrawArrays(GL_TRIANGLES, 0, vertexCount);
+            glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 
-        glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(1);
-        glDisableVertexAttribArray(2);
-        //glDisableVertexAttribArray(3);
+            glDisableVertexAttribArray(0);
+            glDisableVertexAttribArray(1);
+            glDisableVertexAttribArray(2);
+        }
     }
-
-    void Temple::buildTemple(float R, float r, float mainDivs, float tubeDivs)
-    {
-        vertices = (float*)internalVertices.data();
-        normals = (float*)internalFaceNormals.data();
-        vertexNormals = (float*)internalVertexNormals.data();
-        texCoords = vertexNormals;
-        vertexCount = internalVertices.size();
-    }
-
 }

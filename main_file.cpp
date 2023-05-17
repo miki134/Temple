@@ -217,7 +217,8 @@ void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
     glUniformMatrix4fv(spConstant->u("P"), 1, false, glm::value_ptr(P));
     glUniformMatrix4fv(spConstant->u("V"), 1, false, glm::value_ptr(V));
     glUniformMatrix4fv(spConstant->u("M"), 1, false, glm::value_ptr(M));
-    LoadModel();
+
+    Models::temple.drawSolid();
 
     glfwSwapBuffers(window);
 
