@@ -22,14 +22,18 @@ Place, Fifth Floor, Boston, MA  02110 - 1301  USA
 
 ShaderProgram *spLambert;
 ShaderProgram *spConstant;
+ShaderProgram *spSimplest;
 
 void initShaders(){
     spLambert=new ShaderProgram("v_lambert.glsl",NULL,"f_lambert.glsl");
     spConstant=new ShaderProgram("v_constant.glsl",NULL,"f_constant.glsl");
+    spSimplest=new ShaderProgram("v_simplest.glsl",NULL,"f_simplest.glsl");
 }
 
 void freeShaders(){
     delete spLambert;
+    delete spConstant;
+    delete spSimplest;
 }
 
 

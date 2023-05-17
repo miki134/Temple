@@ -16,9 +16,16 @@
 #include <assimp/postprocess.h>
 #include <assimp/mesh.h>
 #include <assimp/scene.h>
+#include "myTeapot.h"
+#include "myCube.h"
 
 float speed = 0;
 float turn = 0;
+
+float fov = 45.0f; // Pole widzenia (FOV)
+float aspectRatio = 0; // Proporcje ekranu
+float nearClip = 0.1f; // Bliska płaszczyzna odcięcia
+float farClip = 100.0f; // Daleka
 
 bool moveForward = false;
 bool moveBackward = false;
@@ -186,7 +193,7 @@ void mouseCallback(GLFWwindow* window, double xpos, double ypos)
 void initOpenGLProgram(GLFWwindow* window) {
 	initShaders();
 	glClearColor(0, 0, 0, 1);
-
+    glEnable(GL_DEPTH_TEST);
 	//glEnable(GL_DEPTH_TEST);
 	glfwSetKeyCallback(window, key_callback);
     glfwSetCursorPosCallback(window, mouseCallback);
@@ -196,18 +203,15 @@ void initOpenGLProgram(GLFWwindow* window) {
 void freeOpenGLProgram(GLFWwindow* window) {
 	freeShaders();
 }
+float* vertices = myCubeVertices;
+float* texCoords = myCubeTexCoords;
+float* colors = myCubeColors;
+float* normals = myCubeVertexNormals;
+int vertexCount = myCubeVertexCount;
 
 void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
 
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    glm::mat4 M = glm::mat4(1.0f);
-    M = glm::rotate(M, angle, glm::vec3(0.0f, 1.0f, 0.0f));
-
-    /*glm::mat4 V = glm::lookAt(
-        glm::vec3(0.0f, 0.0f, -20.0f),
-        glm::vec3(0.0f, 0.0f, 0.0f),
-        glm::vec3(0.0f, 1.0f, 0.0f));*/
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     if (moveForward)
         cameraPosition += cameraSpeed * cameraFront;
@@ -245,30 +249,39 @@ void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
     cameraFront = glm::normalize(front);
 
 
-    //// Ograniczenie zakresu kątów
-    //if (cameraPitch > 89.0f)
-    //    cameraPitch = 89.0f;
-    //if (cameraPitch < -89.0f)
-    //    cameraPitch = -89.0f;
-
-    // Aktualizacja wektora kierunku kamery
-   /* glm::vec3 front;
-    front.x = cos(glm::radians(cameraYaw)) * cos(glm::radians(cameraPitch));
-    front.y = sin(glm::radians(cameraPitch));
-    front.z = sin(glm::radians(cameraYaw)) * cos(glm::radians(cameraPitch));
-    cameraFront = glm::normalize(front);*/
-
+    glm::mat4 M = glm::mat4(1.0f);
+    M = glm::rotate(M, angle, glm::vec3(0.0f, 1.0f, 0.0f));
 
     glm::mat4 V = glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
+    /*glm::mat4 V = glm::lookAt(
+        glm::vec3(0.0f, 0.0f, -3.0f),
+        glm::vec3(0.0f, 0.0f, 0.0f),
+        glm::vec3(0.0f, 1.0f, 0.0f));*/
+
+    //glm::mat4 P = glm::perspective(glm::radians(50.0f), 1.0f, 1.0f, 50.0f);
+    //glm::mat4 P = glm::perspective(50.0f*PI / 180.0f, 1.0f, 1.0f, 50.0f);
+    glm::mat4 P = glm::perspective(glm::radians(fov), aspectRatio, nearClip, farClip);
+
+    spLambert->use();//Aktywacja programu cieniującego
+    glUniformMatrix4fv(spLambert->u("P"), 1, false, glm::value_ptr(P));
+    glUniformMatrix4fv(spLambert->u("V"), 1, false, glm::value_ptr(V));
+    glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(M));
 
 
-    glm::mat4 P = glm::perspective(
-        glm::radians(50.0f), 1.0f, 1.0f, 50.0f);
+    //glEnableVertexAttribArray(spSimplest->a("vertex")); //Enable sending data to the attribute vertex
+    //glVertexAttribPointer(spSimplest->a("vertex"), 4, GL_FLOAT, false, 0, vertices); //Specify source of the data for the attribute vertex
 
-    spConstant->use();//Aktywacja programu cieniującego
-    glUniformMatrix4fv(spConstant->u("P"), 1, false, glm::value_ptr(P));
-    glUniformMatrix4fv(spConstant->u("V"), 1, false, glm::value_ptr(V));
-    glUniformMatrix4fv(spConstant->u("M"), 1, false, glm::value_ptr(M));
+    //glEnableVertexAttribArray(spSimplest->a("color")); //Enable sending data to the attribute color
+    //glVertexAttribPointer(spSimplest->a("color"), 4, GL_FLOAT, false, 0, colors); //Specify source of the data for the attribute color
+
+    //glEnableVertexAttribArray(spSimplest->a("normal")); //Enable sending data to the attribute color
+    //glVertexAttribPointer(spSimplest->a("normal"), 4, GL_FLOAT, false, 0, normals); //Specify source of the data for the attribute normal
+
+    //glDrawArrays(GL_TRIANGLES, 0, vertexCount); //Draw the object
+
+    //glDisableVertexAttribArray(spSimplest->a("vertex")); //Disable sending data to the attribute vertex
+    //glDisableVertexAttribArray(spSimplest->a("color")); //Disable sending data to the attribute color
+    //glDisableVertexAttribArray(spSimplest->a("normal")); //Disable sending data to the attribute normal
 
     Models::temple.drawSolid();
 
@@ -291,6 +304,7 @@ int main(void)
     int screenWidth = mode->width;
     int screenHeight = mode->height;
 
+	//window = glfwCreateWindow(500, 500, "OpenGL", NULL, NULL);
 	window = glfwCreateWindow(screenWidth, screenHeight, "OpenGL", NULL, NULL);
 
     glfwSetWindowMonitor(window, monitor, 0, 0, screenWidth, screenHeight, mode->refreshRate);
@@ -311,22 +325,22 @@ int main(void)
 		exit(EXIT_FAILURE);
 	}
 
-
-
 	initOpenGLProgram(window);
-
 
 	float angle = 0;
     float wheelAngle = 0;
 
 	glfwSetTime(0);
-	//Główna pętla
 	while (!glfwWindowShouldClose(window)) //Tak długo jak okno nie powinno zostać zamknięte
 	{
 		angle += speed * glfwGetTime();
         wheelAngle += -PI / 6 * glfwGetTime();
 		glfwSetTime(0);
-        //Draw::carWithTurningWeels(window, angle, turn, wheelAngle);
+        
+        int frameBufferWidth, frameBufferHeight;
+        glfwGetFramebufferSize(window, &frameBufferWidth, &frameBufferHeight);
+        aspectRatio = static_cast<float>(frameBufferWidth) / frameBufferHeight;
+
         drawScene(window, angle, wheelAngle);
 
 		glfwPollEvents(); //Wykonaj procedury callback w zalezności od zdarzeń jakie zaszły.
