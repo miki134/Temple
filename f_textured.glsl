@@ -1,13 +1,13 @@
-#version 330 core
+#version 330
 
-// Tekstura
+
 uniform sampler2D tex;
 
-// Zmienne interpolowane
-in vec2 fragTexCoord;
-out vec4 fragmentColor;
+out vec4 pixelColor; //Zmienna wyjsciowa fragment shadera. Zapisuje sie do niej ostateczny (prawie) kolor piksela
+
+//Zmienne interpolowane
+in vec2 i_tc;
 
 void main(void) {
-    // Pobierz kolor piksela z tekstury na podstawie wspó³rzêdnych tekstur
-    fragmentColor = texture(tex, fragTexCoord);
+	pixelColor=texture(tex,i_tc);
 }

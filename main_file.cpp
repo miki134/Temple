@@ -206,13 +206,23 @@ GLuint readTexture(const char* filename) {
     glGenTextures(1, &tex); //Zainicjuj jeden uchwyt
     glBindTexture(GL_TEXTURE_2D, tex); //Uaktywnij uchwyt
     //Wczytaj obrazek do pamięci KG skojarzonej z uchwytem
-    glTexImage2D(GL_TEXTURE_2D, 0, 4, width, height, 0,
-        GL_RGBA, GL_UNSIGNED_BYTE, (unsigned char*)image.data());
+    glTexImage2D(GL_TEXTURE_2D, 0, 4, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, (unsigned char*)image.data());
 
     glGenerateMipmap(GL_TEXTURE_2D);
 
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+/*
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_LOD, 0.0f);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_LOD, 10.0f);*/
+
+
+    /*glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);*/
     /*glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);*/
 
@@ -475,6 +485,7 @@ void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
     glUniformMatrix4fv(sp->u("P"), 1, false, glm::value_ptr(P));
     glUniformMatrix4fv(sp->u("V"), 1, false, glm::value_ptr(V));
     glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M));
+    Models::temple.drawTextured(sp, tex);
 
     //checkError();
     //glEnableVertexAttribArray(spSimplest->a("vertex")); //Enable sending data to the attribute vertex
@@ -492,7 +503,6 @@ void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
     //glDisableVertexAttribArray(spSimplest->a("color")); //Disable sending data to the attribute color
     //glDisableVertexAttribArray(spSimplest->a("normal")); //Disable sending data to the attribute normal
 
-    Models::temple.drawTextured(sp, tex);
     //checkError();
 
     glfwSwapBuffers(window);

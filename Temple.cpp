@@ -13,7 +13,7 @@ namespace Models {
 
     Temple::Temple()
     {
-        std::string filename = "./model/temple6.obj";
+        std::string filename = "./model/temple4.obj";
 
         Assimp::Importer importer;
         const aiScene* scene = importer.ReadFile(filename, aiProcess_Triangulate | aiProcess_FlipUVs);
@@ -64,9 +64,9 @@ namespace Models {
             tempinternalTexCoords.insert(tempinternalTexCoords.end(), texCoords.begin(), texCoords.end());
 
 
-            printf("Read %d vertices\n", vertices.size());
+            /*printf("Read %d vertices\n", vertices.size());
             printf("Read %d normals\n", normals.size());
-            printf("Read %d texCoords\n", texCoords.size());
+            printf("Read %d texCoords\n", texCoords.size());*/
         }
 
         printf("Read %d internalVertices\n", internalVertices.size());
@@ -119,8 +119,9 @@ namespace Models {
             glEnableVertexAttribArray(sp->a("vertex"));
             glVertexAttribPointer(sp->a("vertex"), 4, GL_FLOAT, false, 0, vertices.data());
 
+
             glEnableVertexAttribArray(sp->a("texCoord"));
-            glVertexAttribPointer(sp->a("texCoord"), 2, GL_FLOAT, false, 0, texCoords.data());
+            glVertexAttribPointer(sp->a("texCoord"), 4, GL_FLOAT, false, 0, texCoords.data());
 
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, texture);
@@ -129,7 +130,9 @@ namespace Models {
             glDrawArrays(GL_QUADS, 0, vertices.size());
 
             glDisableVertexAttribArray(sp->a("vertex"));
-            glDisableVertexAttribArray(sp->a("color"));
+            glDisableVertexAttribArray(sp->a("texCoord"));
+
+            //glDisableVertexAttribArray(sp->a("color"));
         }
     }
 
@@ -138,16 +141,16 @@ namespace Models {
         glEnableVertexAttribArray(sp->a("vertex"));
         glVertexAttribPointer(sp->a("vertex"), 4, GL_FLOAT, false, 0, tempinternalVertices.data());
 
-        glEnableVertexAttribArray(sp->a("normal"));
-        glVertexAttribPointer(sp->a("normal"), 4, GL_FLOAT, false, 0, tempinternalNormals.data());
+        /*glEnableVertexAttribArray(sp->a("normal"));
+        glVertexAttribPointer(sp->a("normal"), 4, GL_FLOAT, false, 0, tempinternalNormals.data());*/
 
         glEnableVertexAttribArray(sp->a("texCoord"));
-        glVertexAttribPointer(sp->a("texCoord"), 2, GL_FLOAT, false, 0, tempinternalTexCoords.data());
+        glVertexAttribPointer(sp->a("texCoord"), 4, GL_FLOAT, false, 0, tempinternalTexCoords.data());
 
-        glDrawArrays(GL_TRIANGLES, 0, tempinternalVertices.size());
+        glDrawArrays(GL_QUADS, 0, tempinternalVertices.size());
 
         glDisableVertexAttribArray(sp->a("vertex"));
-        glDisableVertexAttribArray(sp->a("normal"));
+        //glDisableVertexAttribArray(sp->a("normal"));
         glDisableVertexAttribArray(sp->a("texCoord"));
     }
 }
