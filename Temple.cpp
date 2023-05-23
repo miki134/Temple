@@ -5,7 +5,7 @@
 #include <assimp/mesh.h>
 #include <assimp/scene.h>
 
-#include<vector>
+#include <vector>
 
 namespace Models {
 
@@ -13,7 +13,7 @@ namespace Models {
 
     Temple::Temple()
     {
-        std::string filename = "./model/temple.obj";
+        std::string filename = "./model/temple6.obj";
 
         Assimp::Importer importer;
         const aiScene* scene = importer.ReadFile(filename, aiProcess_Triangulate | aiProcess_FlipUVs);
@@ -58,7 +58,20 @@ namespace Models {
             internalVertices.push_back(vertices);
             internalNormals.push_back(normals);
             internalTexCoords.push_back(texCoords);
+
+            tempinternalVertices.insert(tempinternalVertices.end(), vertices.begin(), vertices.end());
+            tempinternalNormals.insert(tempinternalNormals.end(), normals.begin(), normals.end());
+            tempinternalTexCoords.insert(tempinternalTexCoords.end(), texCoords.begin(), texCoords.end());
+
+
+            printf("Read %d vertices\n", vertices.size());
+            printf("Read %d normals\n", normals.size());
+            printf("Read %d texCoords\n", texCoords.size());
         }
+
+        printf("Read %d internalVertices\n", internalVertices.size());
+        printf("Read %d internalNormals\n", internalNormals.size());
+        printf("Read %d internalTexCoords\n", internalTexCoords.size());
     }
 
     Temple::Temple(float R, float r, float mainDivs, float tubeDivs)
@@ -69,7 +82,7 @@ namespace Models {
     {
     }
 
-    void Temple::drawSolid(bool smooth) {
+    void Temple::drawSolid(ShaderProgram* sp, GLuint texture) {
 
         for (unsigned int i = 0; i < meshesNumber; i++)
         {
@@ -77,19 +90,64 @@ namespace Models {
             std::vector<glm::vec4> normals = internalNormals[i];
             std::vector<glm::vec4> texCoords = internalTexCoords[i];
 
-            glEnableVertexAttribArray(0);
-            glEnableVertexAttribArray(1);
-            glEnableVertexAttribArray(2);
 
-            glVertexAttribPointer(0, 4, GL_FLOAT, false, 0, vertices.data());
-            glVertexAttribPointer(1, 4, GL_FLOAT, false, 0, normals.data());
-            glVertexAttribPointer(2, 4, GL_FLOAT, false, 0, texCoords.data());
+            glEnableVertexAttribArray(sp->a("vertex"));
+            glVertexAttribPointer(sp->a("vertex"), 4, GL_FLOAT, false, 0, vertices.data());
 
-            glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+            glEnableVertexAttribArray(sp->a("normal"));
+            glVertexAttribPointer(sp->a("normal"), 4, GL_FLOAT, false, 0, normals.data());
 
-            glDisableVertexAttribArray(0);
-            glDisableVertexAttribArray(1);
-            glDisableVertexAttribArray(2);
+            glEnableVertexAttribArray(sp->a("texCoord"));
+            glVertexAttribPointer(sp->a("texCoord"), 2, GL_FLOAT, false, 0, texCoords.data());
+
+            glDrawArrays(GL_QUADS, 0, vertices.size());
+
+            glDisableVertexAttribArray(sp->a("vertex"));
+            glDisableVertexAttribArray(sp->a("normal"));
+            glDisableVertexAttribArray(sp->a("texCoord"));
         }
+    }
+
+    void Temple::drawTextured(ShaderProgram* sp, GLuint texture)
+    {
+        for (unsigned int i = 0; i < meshesNumber; i++)
+        {
+            std::vector<glm::vec4> vertices = internalVertices[i];
+            std::vector<glm::vec4> normals = internalNormals[i];
+            std::vector<glm::vec4> texCoords = internalTexCoords[i];
+
+            glEnableVertexAttribArray(sp->a("vertex"));
+            glVertexAttribPointer(sp->a("vertex"), 4, GL_FLOAT, false, 0, vertices.data());
+
+            glEnableVertexAttribArray(sp->a("texCoord"));
+            glVertexAttribPointer(sp->a("texCoord"), 2, GL_FLOAT, false, 0, texCoords.data());
+
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, texture);
+            glUniform1i(sp->u("tex"), 0);
+
+            glDrawArrays(GL_QUADS, 0, vertices.size());
+
+            glDisableVertexAttribArray(sp->a("vertex"));
+            glDisableVertexAttribArray(sp->a("color"));
+        }
+    }
+
+    void Temple::testDraw(ShaderProgram * sp, GLuint texture)
+    {
+        glEnableVertexAttribArray(sp->a("vertex"));
+        glVertexAttribPointer(sp->a("vertex"), 4, GL_FLOAT, false, 0, tempinternalVertices.data());
+
+        glEnableVertexAttribArray(sp->a("normal"));
+        glVertexAttribPointer(sp->a("normal"), 4, GL_FLOAT, false, 0, tempinternalNormals.data());
+
+        glEnableVertexAttribArray(sp->a("texCoord"));
+        glVertexAttribPointer(sp->a("texCoord"), 2, GL_FLOAT, false, 0, tempinternalTexCoords.data());
+
+        glDrawArrays(GL_TRIANGLES, 0, tempinternalVertices.size());
+
+        glDisableVertexAttribArray(sp->a("vertex"));
+        glDisableVertexAttribArray(sp->a("normal"));
+        glDisableVertexAttribArray(sp->a("texCoord"));
     }
 }

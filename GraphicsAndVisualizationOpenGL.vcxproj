@@ -50,11 +50,15 @@
     <None Include="assimp-vc143-mt.dll" />
     <None Include="f_constant.glsl" />
     <None Include="f_lambert.glsl" />
+    <None Include="f_lamberttextured.glsl" />
     <None Include="f_simplest.glsl" />
+    <None Include="f_textured.glsl" />
     <None Include="glew32.dll1" />
     <None Include="v_constant.glsl" />
     <None Include="v_lambert.glsl" />
+    <None Include="v_lamberttextured.glsl" />
     <None Include="v_simplest.glsl" />
+    <None Include="v_textured.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="assimp-vc143-mt.lib" />

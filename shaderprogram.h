@@ -47,6 +47,7 @@ public:
 extern ShaderProgram *spConstant;
 extern ShaderProgram *spLambert;
 extern ShaderProgram *spSimplest;
+extern ShaderProgram *spTextured;
 
 void initShaders();
 void freeShaders();
