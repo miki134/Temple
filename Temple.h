@@ -21,11 +21,11 @@ namespace Models {
 
         std::vector<std::vector<glm::vec4>> internalVertices;
         std::vector<std::vector<glm::vec4>> internalNormals;
-        std::vector<std::vector<glm::vec4>> internalTexCoords;
+        std::vector<std::vector<glm::vec2>> internalTexCoords;
 
         std::vector<glm::vec4> tempinternalVertices;
         std::vector<glm::vec4> tempinternalNormals;
-        std::vector<glm::vec4> tempinternalTexCoords;
+        std::vector<glm::vec2> tempinternalTexCoords;
     };
 
     extern Temple temple;

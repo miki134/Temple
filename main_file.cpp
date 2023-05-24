@@ -208,14 +208,24 @@ GLuint readTexture(const char* filename) {
     //Wczytaj obrazek do pamięci KG skojarzonej z uchwytem
     glTexImage2D(GL_TEXTURE_2D, 0, 4, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, (unsigned char*)image.data());
 
-    glGenerateMipmap(GL_TEXTURE_2D);
+    //glGenerateMipmap(GL_TEXTURE_2D);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+   /* glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);*/
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+
+    /*float col[] = { 1.0f,0.0f,0.0f,1.0f };
+    glTexParameterfv(GL_TEXTURE_2D,
+        GL_TEXTURE_BORDER_COLOR, col);
+    glTexParameteri(GL_TEXTURE_2D,
+        GL_TEXTURE_WRAP_S,
+        GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D,
+        GL_TEXTURE_WRAP_T,
+        GL_CLAMP_TO_BORDER);*/
 /*
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_LOD, 0.0f);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_LOD, 10.0f);*/
@@ -237,7 +247,7 @@ void initOpenGLProgram(GLFWwindow* window) {
 	//glEnable(GL_DEPTH_TEST);
 	glfwSetKeyCallback(window, key_callback);
     glfwSetCursorPosCallback(window, mouseCallback);
-    tex = readTexture("bricks.png");
+    tex = readTexture("dirt.png");
 }
 
 //Zwolnienie zasobów zajętych przez program
@@ -245,37 +255,37 @@ void freeOpenGLProgram(GLFWwindow* window) {
 	freeShaders();
     glDeleteTextures(1, &tex);
 }
-float* vertices = myCubeVertices;
-float* texCoords = myCubeTexCoords;
-float* colors = myCubeColors;
-float* normals = myCubeVertexNormals;
-int vertexCount = myCubeVertexCount;
-
-
-void texKostka(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
-
-    spTextured->use(); //Aktywuj program cieniujący
-
-    glUniformMatrix4fv(spTextured->u("P"), 1, false, glm::value_ptr(P)); //Załaduj do programu cieniującego macierz rzutowania
-    glUniformMatrix4fv(spTextured->u("V"), 1, false, glm::value_ptr(V)); //Załaduj do programu cieniującego macierz widoku
-    glUniformMatrix4fv(spTextured->u("M"), 1, false, glm::value_ptr(M)); //Załaduj do programu cieniującego macierz modelu
-
-
-    glEnableVertexAttribArray(spTextured->a("vertex"));
-    glVertexAttribPointer(spTextured->a("vertex"), 4, GL_FLOAT, false, 0, myCubeVertices); //Współrzędne wierzchołków bierz z tablicy myCubeVertices
-
-    //glEnableVertexAttribArray(spTextured->a("texCoord"));
-    //glVertexAttribPointer(spTextured->a("texCoord"), 2, GL_FLOAT, false, 0, myCubeTexCoords); //Współrzędne teksturowania bierz z tablicy myCubeTexCoords
-
-    //glActiveTexture(GL_TEXTURE0);
-    //glBindTexture(GL_TEXTURE_2D, tex);
-    //glUniform1i(spTextured->u("tex"), 0);
-
-    glDrawArrays(GL_TRIANGLES, 0, myCubeVertexCount);
-
-    glDisableVertexAttribArray(spTextured->a("vertex"));
-    glDisableVertexAttribArray(spTextured->a("color"));
-}
+//float* vertices = myCubeVertices;
+//float* texCoords = myCubeTexCoords;
+//float* colors = myCubeColors;
+//float* normals = myCubeVertexNormals;
+//int vertexCount = myCubeVertexCount;
+//
+//
+//void texKostka(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+//
+//    spTextured->use(); //Aktywuj program cieniujący
+//
+//    glUniformMatrix4fv(spTextured->u("P"), 1, false, glm::value_ptr(P)); //Załaduj do programu cieniującego macierz rzutowania
+//    glUniformMatrix4fv(spTextured->u("V"), 1, false, glm::value_ptr(V)); //Załaduj do programu cieniującego macierz widoku
+//    glUniformMatrix4fv(spTextured->u("M"), 1, false, glm::value_ptr(M)); //Załaduj do programu cieniującego macierz modelu
+//
+//
+//    glEnableVertexAttribArray(spTextured->a("vertex"));
+//    glVertexAttribPointer(spTextured->a("vertex"), 4, GL_FLOAT, false, 0, myCubeVertices); //Współrzędne wierzchołków bierz z tablicy myCubeVertices
+//
+//    //glEnableVertexAttribArray(spTextured->a("texCoord"));
+//    //glVertexAttribPointer(spTextured->a("texCoord"), 2, GL_FLOAT, false, 0, myCubeTexCoords); //Współrzędne teksturowania bierz z tablicy myCubeTexCoords
+//
+//    //glActiveTexture(GL_TEXTURE0);
+//    //glBindTexture(GL_TEXTURE_2D, tex);
+//    //glUniform1i(spTextured->u("tex"), 0);
+//
+//    glDrawArrays(GL_TRIANGLES, 0, myCubeVertexCount);
+//
+//    glDisableVertexAttribArray(spTextured->a("vertex"));
+//    glDisableVertexAttribArray(spTextured->a("color"));
+//}
 
 //Procedura rysująca zawartość sceny
 //void drawScene(GLFWwindow* window, float angle_x, float angle_y) {
@@ -479,13 +489,13 @@ void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
         //glm::mat4 P = glm::perspective(50.0f*PI / 180.0f, 1.0f, 1.0f, 50.0f);
     glm::mat4 P = glm::perspective(glm::radians(fov), aspectRatio, nearClip, farClip);
 
-    ShaderProgram *sp = spTextured;
+    ShaderProgram *sp = spSimplest;
 
     sp->use();//Aktywacja programu cieniującego
     glUniformMatrix4fv(sp->u("P"), 1, false, glm::value_ptr(P));
     glUniformMatrix4fv(sp->u("V"), 1, false, glm::value_ptr(V));
     glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M));
-    Models::temple.drawTextured(sp, tex);
+    Models::temple.testDraw(sp, tex);
 
     //checkError();
     //glEnableVertexAttribArray(spSimplest->a("vertex")); //Enable sending data to the attribute vertex
@@ -502,8 +512,6 @@ void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
     //glDisableVertexAttribArray(spSimplest->a("vertex")); //Disable sending data to the attribute vertex
     //glDisableVertexAttribArray(spSimplest->a("color")); //Disable sending data to the attribute color
     //glDisableVertexAttribArray(spSimplest->a("normal")); //Disable sending data to the attribute normal
-
-    //checkError();
 
     glfwSwapBuffers(window);
 }

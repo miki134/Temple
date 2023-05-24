@@ -1,28 +1,34 @@
 #version 330
 
-//Uniform variables
+//Zmienne jednorodne
 uniform mat4 P;
 uniform mat4 V;
 uniform mat4 M;
 
-//Attributes
-in vec4 vertex; //Vertex coordinates in model space
-in vec4 color; //vertex color
-in vec4 normal; //Vertex normal in model space
+//Atrybuty
+in vec4 vertex; //wspolrzedne wierzcholka w przestrzeni modelu
+in vec4 color; //kolor związany z wierzchołkiem
+in vec4 normal; //wektor normalny w przestrzeni modelu
+in vec2 texCoord;
 
-//Varying variables
+//Zmienne interpolowane
 out vec4 ic;
 out vec4 l;
 out vec4 n;
 out vec4 v;
+out vec2 iTexCoord; 
+out vec2 iTexCoord1;
 
 void main(void) {
-    vec4 lp = vec4(0, 0, -6, 1); //light position, world space
-    l = normalize(V * lp - V * M * vertex); //vector towards the light in eye space
-    v = normalize(vec4(0, 0, 0, 1) - V * M * vertex); //vector towards the viewer in eye space
-    n = normalize(V * M * normal); //normal vector in eye space
+    vec4 lp = vec4(0, 20, -6, 1); //pozcyja światła, przestrzeń świata
+    l = normalize(V * lp - V*M*vertex); //wektor do światła w przestrzeni oka
+    v = normalize(vec4(0, 0, 0, 1) - V * M * vertex); //wektor do obserwatora w przestrzeni oka
+    n = normalize(V * M * normal); //wektor normalny w przestrzeni oka
+    
+    iTexCoord = texCoord;
+    iTexCoord1 = (n.xy + 1) / 2;
 
     ic = color;
-
-    gl_Position = P * V * M * vertex;
+    
+    gl_Position=P*V*M*vertex;
 }

@@ -13,7 +13,7 @@ namespace Models {
 
     Temple::Temple()
     {
-        std::string filename = "./model/temple4.obj";
+        std::string filename = "./model/schody.obj";
 
         Assimp::Importer importer;
         const aiScene* scene = importer.ReadFile(filename, aiProcess_Triangulate | aiProcess_FlipUVs);
@@ -32,7 +32,7 @@ namespace Models {
 
             std::vector<glm::vec4> vertices;
             std::vector<glm::vec4> normals;
-            std::vector<glm::vec4> texCoords;
+            std::vector<glm::vec2> texCoords;
 
             for (unsigned int j = 0; j < mesh->mNumVertices; j++)
             {
@@ -50,7 +50,7 @@ namespace Models {
                 if (mesh->HasTextureCoords(0))
                 {
                     aiVector3D texCoord = mesh->mTextureCoords[0][j];
-                    glm::vec4 texCoordVec(texCoord.x, texCoord.y, texCoord.z, 0.0f);
+                    glm::vec2 texCoordVec(texCoord.x*3, texCoord.y *1);
                     texCoords.push_back(texCoordVec);
                 }
             }
@@ -88,8 +88,34 @@ namespace Models {
         {
             std::vector<glm::vec4> vertices = internalVertices[i];
             std::vector<glm::vec4> normals = internalNormals[i];
-            std::vector<glm::vec4> texCoords = internalTexCoords[i];
+            std::vector<glm::vec2> texCoords = internalTexCoords[i];
 
+
+            glEnableVertexAttribArray(sp->a("vertex"));
+            glVertexAttribPointer(sp->a("vertex"), 4, GL_FLOAT, false, 0, vertices.data());
+
+            glEnableVertexAttribArray(sp->a("normal"));
+            glVertexAttribPointer(sp->a("normal"), 4, GL_FLOAT, false, 0, normals.data());
+
+            /*glEnableVertexAttribArray(sp->a("texCoord"));
+            glVertexAttribPointer(sp->a("texCoord"), 2, GL_FLOAT, false, 0, texCoords.data());*/
+
+            glDrawArrays(GL_QUADS, 0, vertices.size());
+
+            glDisableVertexAttribArray(sp->a("vertex"));
+            glDisableVertexAttribArray(sp->a("normal"));
+            //glDisableVertexAttribArray(sp->a("texCoord"));
+            glDisableVertexAttribArray(sp->a("color"));
+        }
+    }
+
+    void Temple::drawTextured(ShaderProgram* sp, GLuint texture)
+    {
+        for (unsigned int i = 0; i < meshesNumber; i++)
+        {
+            std::vector<glm::vec4> vertices = internalVertices[i];
+            std::vector<glm::vec4> normals = internalNormals[i];
+            std::vector<glm::vec2> texCoords = internalTexCoords[i];
 
             glEnableVertexAttribArray(sp->a("vertex"));
             glVertexAttribPointer(sp->a("vertex"), 4, GL_FLOAT, false, 0, vertices.data());
@@ -100,39 +126,19 @@ namespace Models {
             glEnableVertexAttribArray(sp->a("texCoord"));
             glVertexAttribPointer(sp->a("texCoord"), 2, GL_FLOAT, false, 0, texCoords.data());
 
-            glDrawArrays(GL_QUADS, 0, vertices.size());
-
-            glDisableVertexAttribArray(sp->a("vertex"));
-            glDisableVertexAttribArray(sp->a("normal"));
-            glDisableVertexAttribArray(sp->a("texCoord"));
-        }
-    }
-
-    void Temple::drawTextured(ShaderProgram* sp, GLuint texture)
-    {
-        for (unsigned int i = 0; i < meshesNumber; i++)
-        {
-            std::vector<glm::vec4> vertices = internalVertices[i];
-            std::vector<glm::vec4> normals = internalNormals[i];
-            std::vector<glm::vec4> texCoords = internalTexCoords[i];
-
-            glEnableVertexAttribArray(sp->a("vertex"));
-            glVertexAttribPointer(sp->a("vertex"), 4, GL_FLOAT, false, 0, vertices.data());
-
-
-            glEnableVertexAttribArray(sp->a("texCoord"));
-            glVertexAttribPointer(sp->a("texCoord"), 4, GL_FLOAT, false, 0, texCoords.data());
+            //glUniform1f(sp->a("textureScale"), 1.0);
 
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, texture);
             glUniform1i(sp->u("tex"), 0);
 
-            glDrawArrays(GL_QUADS, 0, vertices.size());
+            glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 
             glDisableVertexAttribArray(sp->a("vertex"));
+            glDisableVertexAttribArray(sp->a("normal"));
             glDisableVertexAttribArray(sp->a("texCoord"));
 
-            //glDisableVertexAttribArray(sp->a("color"));
+            glDisableVertexAttribArray(sp->a("color"));
         }
     }
 
@@ -141,16 +147,16 @@ namespace Models {
         glEnableVertexAttribArray(sp->a("vertex"));
         glVertexAttribPointer(sp->a("vertex"), 4, GL_FLOAT, false, 0, tempinternalVertices.data());
 
-        /*glEnableVertexAttribArray(sp->a("normal"));
-        glVertexAttribPointer(sp->a("normal"), 4, GL_FLOAT, false, 0, tempinternalNormals.data());*/
+        glEnableVertexAttribArray(sp->a("normal"));
+        glVertexAttribPointer(sp->a("normal"), 4, GL_FLOAT, false, 0, tempinternalNormals.data());
 
         glEnableVertexAttribArray(sp->a("texCoord"));
-        glVertexAttribPointer(sp->a("texCoord"), 4, GL_FLOAT, false, 0, tempinternalTexCoords.data());
+        glVertexAttribPointer(sp->a("texCoord"), 2, GL_FLOAT, false, 0, tempinternalTexCoords.data());
 
-        glDrawArrays(GL_QUADS, 0, tempinternalVertices.size());
+        glDrawArrays(GL_TRIANGLES, 0, tempinternalVertices.size());
 
         glDisableVertexAttribArray(sp->a("vertex"));
-        //glDisableVertexAttribArray(sp->a("normal"));
+        glDisableVertexAttribArray(sp->a("normal"));
         glDisableVertexAttribArray(sp->a("texCoord"));
     }
 }
