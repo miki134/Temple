@@ -20,6 +20,8 @@
 #include "myCube.h"
 #include <iostream>
 
+bool freeCamera = false;
+
 float speed = 1;
 float turn = 0;
 
@@ -135,6 +137,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     {
         glfwSetWindowShouldClose(window, GLFW_TRUE);
     }
+
+
+    printf("cameraPos: %f, %f, %f\n", cameraPosition.x, cameraPosition.y, cameraPosition.z);
 }
 
 // Callback dla ruchu myszy
@@ -180,7 +185,38 @@ GLuint readTexture(const char* filename) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     return tex;
 }
+std::vector<glm::vec3>objectPositions;
 
+void initCollision()
+{
+    objectPositions.push_back(glm::vec3(11.0f, 2.0f, 0.0f));
+    objectPositions.push_back(glm::vec3(11.0f, 2.0f, -2.0f));
+    objectPositions.push_back(glm::vec3(9.0f, 2.0f, -2.0f));
+    objectPositions.push_back(glm::vec3(9.0f, 2.0f, 0.0f));
+    objectPositions.push_back(glm::vec3(3.0f, 2.0f, -2.0f));
+    objectPositions.push_back(glm::vec3(-1.0f, 2.0f, -2.0f));
+    objectPositions.push_back(glm::vec3(-5.0f, 2.0f, -2.0f));
+    objectPositions.push_back(glm::vec3(-5.0f, 2.0f, -6.0f));
+    objectPositions.push_back(glm::vec3(-5.0f, 2.0f, -10.0f));
+    objectPositions.push_back(glm::vec3(-5.0f, 2.0f, -14.0f));
+    objectPositions.push_back(glm::vec3(-5.0f, 2.0f, -17.5f));
+    objectPositions.push_back(glm::vec3(-3.0f, 2.0f, -17.0f));
+    objectPositions.push_back(glm::vec3(1.0f, 2.0f, -17.0f));
+    objectPositions.push_back(glm::vec3(4.0f, 2.0f, -17.0f));
+    objectPositions.push_back(glm::vec3(8.0f, 2.0f, -17.0f));
+    objectPositions.push_back(glm::vec3(10.5f, 2.0f, -17.3f));
+    objectPositions.push_back(glm::vec3(10.5f, 2.0f, -13.5f));
+    objectPositions.push_back(glm::vec3(10.5f, 2.0f, -10.0f));
+    objectPositions.push_back(glm::vec3(10.5f, 2.0f, -6.5f));
+
+    std::vector < glm::vec3>temp;
+    for (auto it : objectPositions)
+    {
+        temp.push_back(glm::vec3(std::abs(it.x - 16.0f) + 16.0f, it.y, it.z));
+    }
+
+    objectPositions.insert(objectPositions.end(), temp.begin(), temp.end());
+}
 //Procedura inicjująca
 void initOpenGLProgram(GLFWwindow* window) {
 	initShaders();
@@ -193,6 +229,7 @@ void initOpenGLProgram(GLFWwindow* window) {
     tex1 = readTexture("fur.png");
     tex2 = readTexture("clay.png");
     tex3 = readTexture("grass.png");
+    initCollision();
 }
 
 //Zwolnienie zasobów zajętych przez program
@@ -231,9 +268,32 @@ void checkError()
     }
 }
 
+
+
+bool checkCollision(const glm::vec3& position)
+{
+    for (auto objectPosition : objectPositions)
+    {
+        float objectSize = 1.0f;
+
+        if (position.x >= objectPosition.x - objectSize && position.x <= objectPosition.x + objectSize &&
+            position.y >= objectPosition.y - objectSize && position.y <= objectPosition.y + objectSize &&
+            position.z >= objectPosition.z - objectSize && position.z <= objectPosition.z + objectSize)
+        {
+            // Kolizja
+            return true;
+        }
+
+    }
+    return false;
+
+}
+
 void drawScene(GLFWwindow* window, float angle) {
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    auto oldcameraPosition = cameraPosition;
 
     if (moveForward)
         cameraPosition += cameraSpeed * cameraFront;
@@ -248,6 +308,7 @@ void drawScene(GLFWwindow* window, float angle) {
     if (moveDown)
         cameraPosition -= cameraSpeed * cameraUp;
 
+    
     if (rotateLeft)
         cameraYaw -= rotateSpeed;
     if (rotateRight)
@@ -276,7 +337,14 @@ void drawScene(GLFWwindow* window, float angle) {
     Models::temple.M = glm::mat4(1.0f);
     Models::temple.M = glm::scale(Models::temple.M, glm::vec3(3.0f, 3.0f, 3.0f));
 
-    cameraPosition = glm::vec3(cameraPosition.x, 2.0f, cameraPosition.z);
+
+    if (!freeCamera)
+    {
+        if (checkCollision(cameraPosition))
+            cameraPosition = oldcameraPosition;
+        cameraPosition = glm::vec3(cameraPosition.x, 2.0f, cameraPosition.z);
+    }
+
     Models::temple.V = glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
     Models::temple.P = glm::perspective(glm::radians(fov), aspectRatio, nearClip, farClip);
     Models::temple.angle = angle;
@@ -307,8 +375,8 @@ int main(void)
 	//window = glfwCreateWindow(500, 500, "OpenGL", NULL, NULL);
 	window = glfwCreateWindow(screenWidth, screenHeight, "OpenGL", NULL, NULL);
 
-    //glfwSetWindowMonitor(window, monitor, 0, 0, screenWidth, screenHeight, mode->refreshRate);
-    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetWindowMonitor(window, monitor, 0, 0, screenWidth, screenHeight, mode->refreshRate);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	if (!window)
 	{
