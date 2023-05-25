@@ -20,7 +20,7 @@
 #include "myCube.h"
 #include <iostream>
 
-float speed = 0;
+float speed = 1;
 float turn = 0;
 
 float fov = 45.0f; // Pole widzenia (FOV)
@@ -475,10 +475,7 @@ void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
     cameraFront = glm::normalize(front);
 
 
-    glm::mat4 M = glm::mat4(1.0f);
-    M = glm::rotate(M, angle, glm::vec3(0.0f, 1.0f, 0.0f));
 
-    glm::mat4 V = glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
     /*glm::mat4 V = glm::lookAt(
         glm::vec3(0.0f, 0.0f, -3.0f),
         glm::vec3(0.0f, 0.0f, 0.0f),
@@ -486,14 +483,17 @@ void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
 
         //glm::mat4 P = glm::perspective(glm::radians(50.0f), 1.0f, 1.0f, 50.0f);
         //glm::mat4 P = glm::perspective(50.0f*PI / 180.0f, 1.0f, 1.0f, 50.0f);
-    glm::mat4 P = glm::perspective(glm::radians(fov), aspectRatio, nearClip, farClip);
+
+
+    
 
     ShaderProgram *sp = spSimplest;
 
     sp->use();
-    glUniformMatrix4fv(sp->u("P"), 1, false, glm::value_ptr(P));
-    glUniformMatrix4fv(sp->u("V"), 1, false, glm::value_ptr(V));
-    glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M));
+    Models::temple.M = glm::mat4(1.0f);
+    Models::temple.V = glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
+    Models::temple.P = glm::perspective(glm::radians(fov), aspectRatio, nearClip, farClip);
+    Models::temple.angle = angle;
     Models::temple.drawTextured(sp, tex);
 
     glfwSwapBuffers(window);

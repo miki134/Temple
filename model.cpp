@@ -22,6 +22,7 @@ Place, Fifth Floor, Boston, MA  02110 - 1301  USA
 #include <assimp/postprocess.h>
 #include <assimp/mesh.h>
 #include <assimp/scene.h>
+#include <glm/gtc/type_ptr.hpp>
 
 namespace Models {
     Model::Model()
@@ -74,6 +75,11 @@ namespace Models {
             std::vector<glm::vec4> vertices = internalVertices[i];
             std::vector<glm::vec4> normals = internalNormals[i];
             std::vector<glm::vec2> texCoords = internalTexCoords[i];
+
+            sp->use();
+            glUniformMatrix4fv(sp->u("P"), 1, false, glm::value_ptr(P));
+            glUniformMatrix4fv(sp->u("V"), 1, false, glm::value_ptr(V));
+            glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M));
 
             glEnableVertexAttribArray(sp->a("vertex"));
             glVertexAttribPointer(sp->a("vertex"), 4, GL_FLOAT, false, 0, vertices.data());

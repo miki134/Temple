@@ -59,6 +59,12 @@ namespace Models {
             virtual void drawTextured(ShaderProgram* sp, GLuint texture);
             virtual void drawAllInOneMesh(ShaderProgram* sp, GLuint texture);
 
+            glm::mat4 M;
+            glm::mat4 V;
+            glm::mat4 P;
+
+            float angle;
+
     protected:
             virtual void initOBJ(std::string filename);
 	};
