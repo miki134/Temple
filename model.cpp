@@ -28,7 +28,14 @@ namespace Models {
     Model::Model()
     {
     }
-    Model::Model(std::string filename)
+
+    Model::Model(float _textureMultiplier) :
+        textureMultiplier(_textureMultiplier)
+    {
+    }
+
+    Model::Model(std::string filename, float _textureMultiplier) :
+        textureMultiplier(_textureMultiplier)
     {
         initOBJ(filename);
     }
@@ -161,7 +168,7 @@ namespace Models {
                 if (mesh->HasTextureCoords(0))
                 {
                     aiVector3D texCoord = mesh->mTextureCoords[0][j];
-                    glm::vec2 texCoordVec(texCoord.x * 3, texCoord.y * 1);
+                    glm::vec2 texCoordVec(texCoord.x * textureMultiplier, texCoord.y * textureMultiplier);
                     texCoords.push_back(texCoordVec);
                 }
             }

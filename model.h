@@ -33,7 +33,8 @@ namespace Models {
 	class Model {
 		public:
             Model();
-            Model(std::string filename);
+            Model(float textureMultiplier);
+            Model(std::string filename, float _textureMultiplier = 1.0);
             virtual ~Model() = default;
 
 			int vertexCount;
@@ -64,6 +65,8 @@ namespace Models {
             glm::mat4 P;
 
             float angle;
+
+            float textureMultiplier = 1.0;
 
     protected:
             virtual void initOBJ(std::string filename);

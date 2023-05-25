@@ -61,46 +61,6 @@ void error_callback(int error, const char* description) {
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 
-	/*if (action == GLFW_PRESS) {
-        if (key == GLFW_KEY_W) {
-            cameraPosition += cameraSpeed * cameraFront;
-            printf("W \n");
-        }
-        if (key == GLFW_KEY_A) {
-            cameraPosition -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-            printf("A \n");
-        }
-        if (key == GLFW_KEY_S) {
-            cameraPosition -= cameraSpeed * cameraFront;
-            printf("S \n");
-        }
-        if (key == GLFW_KEY_D) {
-            cameraPosition += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-            printf("D \n");
-        }
-
-		if (key == GLFW_KEY_LEFT) {
-			speed -= PI;
-			printf("LEFT \n");
-		}
-		if (key == GLFW_KEY_RIGHT) {
-			speed += PI;
-			printf("RIGHT \n");
-		}
-		if (key == GLFW_KEY_W && (mods & GLFW_MOD_ALT) != 0)
-			printf("ALT+W\n");
-
-	}
-
-	if (action == GLFW_RELEASE) {
-		if (key == GLFW_KEY_W) printf("puszczone W\n");
-        if (key == GLFW_KEY_LEFT || key == GLFW_KEY_RIGHT) speed = 0;
-        if (key == GLFW_KEY_A || key == GLFW_KEY_D) turn = 0;
-		speed = 0;
-	}*/
-
-
-
     if (key == GLFW_KEY_W)
     {
         if (action == GLFW_PRESS)
@@ -192,6 +152,8 @@ void mouseCallback(GLFWwindow* window, double xpos, double ypos)
 
 GLuint tex;
 GLuint tex1;
+GLuint tex2;
+GLuint tex3;
 
 GLuint readTexture(const char* filename) {
     GLuint tex;
@@ -209,34 +171,13 @@ GLuint readTexture(const char* filename) {
     //Wczytaj obrazek do pamięci KG skojarzonej z uchwytem
     glTexImage2D(GL_TEXTURE_2D, 0, 4, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, (unsigned char*)image.data());
 
-    //glGenerateMipmap(GL_TEXTURE_2D);
+    glGenerateMipmap(GL_TEXTURE_2D);
 
-   /* glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);*/
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-
-    /*float col[] = { 1.0f,0.0f,0.0f,1.0f };
-    glTexParameterfv(GL_TEXTURE_2D,
-        GL_TEXTURE_BORDER_COLOR, col);
-    glTexParameteri(GL_TEXTURE_2D,
-        GL_TEXTURE_WRAP_S,
-        GL_CLAMP_TO_BORDER);
-    glTexParameteri(GL_TEXTURE_2D,
-        GL_TEXTURE_WRAP_T,
-        GL_CLAMP_TO_BORDER);*/
-/*
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_LOD, 0.0f);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_LOD, 10.0f);*/
-
-
-    /*glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);*/
-    /*glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);*/
-
     return tex;
 }
 
@@ -250,6 +191,8 @@ void initOpenGLProgram(GLFWwindow* window) {
     glfwSetCursorPosCallback(window, mouseCallback);
     tex = readTexture("dirt.png");
     tex1 = readTexture("fur.png");
+    tex2 = readTexture("clay.png");
+    tex3 = readTexture("grass.png");
 }
 
 //Zwolnienie zasobów zajętych przez program
@@ -257,157 +200,9 @@ void freeOpenGLProgram(GLFWwindow* window) {
 	freeShaders();
     glDeleteTextures(1, &tex);
     glDeleteTextures(1, &tex1);
+    glDeleteTextures(1, &tex2);
+    glDeleteTextures(1, &tex3);
 }
-//float* vertices = myCubeVertices;
-//float* texCoords = myCubeTexCoords;
-//float* colors = myCubeColors;
-//float* normals = myCubeVertexNormals;
-//int vertexCount = myCubeVertexCount;
-//
-//
-//void texKostka(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
-//
-//    spTextured->use(); //Aktywuj program cieniujący
-//
-//    glUniformMatrix4fv(spTextured->u("P"), 1, false, glm::value_ptr(P)); //Załaduj do programu cieniującego macierz rzutowania
-//    glUniformMatrix4fv(spTextured->u("V"), 1, false, glm::value_ptr(V)); //Załaduj do programu cieniującego macierz widoku
-//    glUniformMatrix4fv(spTextured->u("M"), 1, false, glm::value_ptr(M)); //Załaduj do programu cieniującego macierz modelu
-//
-//
-//    glEnableVertexAttribArray(spTextured->a("vertex"));
-//    glVertexAttribPointer(spTextured->a("vertex"), 4, GL_FLOAT, false, 0, myCubeVertices); //Współrzędne wierzchołków bierz z tablicy myCubeVertices
-//
-//    //glEnableVertexAttribArray(spTextured->a("texCoord"));
-//    //glVertexAttribPointer(spTextured->a("texCoord"), 2, GL_FLOAT, false, 0, myCubeTexCoords); //Współrzędne teksturowania bierz z tablicy myCubeTexCoords
-//
-//    //glActiveTexture(GL_TEXTURE0);
-//    //glBindTexture(GL_TEXTURE_2D, tex);
-//    //glUniform1i(spTextured->u("tex"), 0);
-//
-//    glDrawArrays(GL_TRIANGLES, 0, myCubeVertexCount);
-//
-//    glDisableVertexAttribArray(spTextured->a("vertex"));
-//    glDisableVertexAttribArray(spTextured->a("color"));
-//}
-
-//Procedura rysująca zawartość sceny
-//void drawScene(GLFWwindow* window, float angle_x, float angle_y) {
-//    //************Tutaj umieszczaj kod rysujący obraz******************l
-//    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Wyczyść bufor koloru i bufor głębokości
-//
-//    glm::mat4 M = glm::mat4(1.0f); //Zainicjuj macierz modelu macierzą jednostkową
-//    M = glm::rotate(M, angle_y, glm::vec3(0.0f, 1.0f, 0.0f)); //Pomnóż macierz modelu razy macierz obrotu o kąt angle wokół osi Y
-//    M = glm::rotate(M, angle_x, glm::vec3(1.0f, 0.0f, 0.0f)); //Pomnóż macierz modelu razy macierz obrotu o kąt angle wokół osi X
-//    glm::mat4 V = glm::lookAt(glm::vec3(0.0f, 0.0f, -5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz widoku
-//    glm::mat4 P = glm::perspective(glm::radians(50.0f), 1.0f, 1.0f, 50.0f); //Wylicz macierz rzutowania
-//
-//
-//    spTextured->use();
-//    glUniformMatrix4fv(spTextured->u("P"), 1, false, glm::value_ptr(P));
-//    glUniformMatrix4fv(spTextured->u("V"), 1, false, glm::value_ptr(V));
-//    glUniformMatrix4fv(spTextured->u("M"), 1, false, glm::value_ptr(M));
-//    //texKostka(P, V, M);
-//    Models::temple.drawTextured(spTextured, tex);
-//    //Models::temple.drawSolid();
-//
-//
-//    glfwSwapBuffers(window); //Skopiuj bufor tylny do bufora przedniego
-//}
-
-//void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
-//
-//    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//
-//    if (moveForward)
-//        cameraPosition += cameraSpeed * cameraFront;
-//    if (moveBackward)
-//        cameraPosition -= cameraSpeed * cameraFront;
-//    if (moveLeft)
-//        cameraPosition -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-//    if (moveRight)
-//        cameraPosition += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-//    if (moveUp)
-//        cameraPosition += cameraSpeed * cameraUp;
-//    if (moveDown)
-//        cameraPosition -= cameraSpeed * cameraUp;
-//
-//    if (rotateLeft)
-//        cameraYaw -= rotateSpeed;
-//    if (rotateRight)
-//        cameraYaw += rotateSpeed;
-//    if (rotateUp)
-//        cameraPitch += rotateSpeed;
-//    if (rotateDown)
-//        cameraPitch -= rotateSpeed;
-//
-//    // Ograniczenie zakresu kątów
-//    /*if (cameraPitch > 89.0f)
-//        cameraPitch = 89.0f;
-//    if (cameraPitch < -89.0f)
-//        cameraPitch = -89.0f;*/
-//
-//    // Aktualizacja wektora kierunku kamery
-//    glm::vec3 front;
-//    front.x = cos(glm::radians(cameraYaw)) * cos(glm::radians(cameraPitch));
-//    front.y = sin(glm::radians(cameraPitch));
-//    front.z = sin(glm::radians(cameraYaw)) * cos(glm::radians(cameraPitch));
-//    cameraFront = glm::normalize(front);
-//
-//
-//    glm::mat4 M = glm::mat4(1.0f);
-//    M = glm::rotate(M, angle, glm::vec3(0.0f, 1.0f, 0.0f));
-//
-//    glm::mat4 V = glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
-//    /*glm::mat4 V = glm::lookAt(
-//        glm::vec3(0.0f, 0.0f, -3.0f),
-//        glm::vec3(0.0f, 0.0f, 0.0f),
-//        glm::vec3(0.0f, 1.0f, 0.0f));*/
-//
-//    //glm::mat4 P = glm::perspective(glm::radians(50.0f), 1.0f, 1.0f, 50.0f);
-//    //glm::mat4 P = glm::perspective(50.0f*PI / 180.0f, 1.0f, 1.0f, 50.0f);
-//    glm::mat4 P = glm::perspective(glm::radians(fov), aspectRatio, nearClip, farClip);
-//
-//    spTextured->use();//Aktywacja programu cieniującego
-//    glUniformMatrix4fv(spTextured->u("P"), 1, false, glm::value_ptr(P));
-//    glUniformMatrix4fv(spTextured->u("V"), 1, false, glm::value_ptr(V));
-//    glUniformMatrix4fv(spTextured->u("M"), 1, false, glm::value_ptr(M));
-//
-//
-//    //glEnableVertexAttribArray(spSimplest->a("vertex")); //Enable sending data to the attribute vertex
-//    //glVertexAttribPointer(spSimplest->a("vertex"), 4, GL_FLOAT, false, 0, vertices); //Specify source of the data for the attribute vertex
-//
-//    //glEnableVertexAttribArray(spSimplest->a("color")); //Enable sending data to the attribute color
-//    //glVertexAttribPointer(spSimplest->a("color"), 4, GL_FLOAT, false, 0, colors); //Specify source of the data for the attribute color
-//
-//    //glEnableVertexAttribArray(spSimplest->a("normal")); //Enable sending data to the attribute color
-//    //glVertexAttribPointer(spSimplest->a("normal"), 4, GL_FLOAT, false, 0, normals); //Specify source of the data for the attribute normal
-//
-//    //glDrawArrays(GL_TRIANGLES, 0, vertexCount); //Draw the object
-//
-//    //glDisableVertexAttribArray(spSimplest->a("vertex")); //Disable sending data to the attribute vertex
-//    //glDisableVertexAttribArray(spSimplest->a("color")); //Disable sending data to the attribute color
-//    //glDisableVertexAttribArray(spSimplest->a("normal")); //Disable sending data to the attribute normal
-//
-//    //Models::temple.drawTextured(spTextured, texture);
-//
-//    glEnableVertexAttribArray(spTextured->a("vertex"));
-//    glVertexAttribPointer(spTextured->a("vertex"), 4, GL_FLOAT, false, 0, myCubeVertices); //Współrzędne wierzchołków bierz z tablicy myCubeVertices
-//
-//    glEnableVertexAttribArray(spTextured->a("texCoord"));
-//    glVertexAttribPointer(spTextured->a("texCoord"), 2, GL_FLOAT, false, 0, myCubeTexCoords); //Współrzędne teksturowania bierz z tablicy myCubeTexCoords
-//
-//    glActiveTexture(GL_TEXTURE0);
-//    glBindTexture(GL_TEXTURE_2D, tex);
-//    glUniform1i(spTextured->u("tex"), 0);
-//
-//    glDrawArrays(GL_TRIANGLES, 0, myCubeVertexCount);
-//
-//    glDisableVertexAttribArray(spTextured->a("vertex"));
-//    glDisableVertexAttribArray(spTextured->a("color"));
-//
-//    glfwSwapBuffers(window);
-//}
-
 
 void checkError()
 {
@@ -428,17 +223,15 @@ void checkError()
         case GL_OUT_OF_MEMORY:
             errorMessage = "GL_OUT_OF_MEMORY: Brak pamięci";
             break;
-            // Dodaj inne przypadki obsługi błędów, jeśli to konieczne
         default:
             errorMessage = "Nieznany błąd OpenGL";
             break;
         }
-        // Wyświetl lub zapisz komunikat o błędzie
         std::cout << "Błąd OpenGL: " << errorMessage << std::endl;
     }
 }
 
-void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
+void drawScene(GLFWwindow* window, float angle) {
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -477,19 +270,6 @@ void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
     front.z = sin(glm::radians(cameraYaw)) * cos(glm::radians(cameraPitch));
     cameraFront = glm::normalize(front);
 
-
-
-    /*glm::mat4 V = glm::lookAt(
-        glm::vec3(0.0f, 0.0f, -3.0f),
-        glm::vec3(0.0f, 0.0f, 0.0f),
-        glm::vec3(0.0f, 1.0f, 0.0f));*/
-
-        //glm::mat4 P = glm::perspective(glm::radians(50.0f), 1.0f, 1.0f, 50.0f);
-        //glm::mat4 P = glm::perspective(50.0f*PI / 180.0f, 1.0f, 1.0f, 50.0f);
-
-
-    
-
     ShaderProgram *sp = spSimplest;
 
     sp->use();
@@ -499,6 +279,8 @@ void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
     Models::temple.P = glm::perspective(glm::radians(fov), aspectRatio, nearClip, farClip);
     Models::temple.angle = angle;
     Models::temple.bunnyTexture = tex1;
+    Models::temple.clayTexture = tex2;
+    Models::temple.grassTexture = tex3;
     Models::temple.drawTextured(sp, tex);
 
     glfwSwapBuffers(window);
@@ -520,12 +302,11 @@ int main(void)
     int screenWidth = mode->width;
     int screenHeight = mode->height;
 
-	window = glfwCreateWindow(500, 500, "OpenGL", NULL, NULL);
+	//window = glfwCreateWindow(500, 500, "OpenGL", NULL, NULL);
 	window = glfwCreateWindow(screenWidth, screenHeight, "OpenGL", NULL, NULL);
-    //window = glfwCreateWindow(500, 500, "OpenGL", NULL, NULL);  //Utwórz okno 500x500 o tytule "OpenGL" i kontekst OpenGL.
 
-    glfwSetWindowMonitor(window, monitor, 0, 0, screenWidth, screenHeight, mode->refreshRate);
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    //glfwSetWindowMonitor(window, monitor, 0, 0, screenWidth, screenHeight, mode->refreshRate);
+    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	if (!window)
 	{
@@ -545,25 +326,20 @@ int main(void)
 	initOpenGLProgram(window);
 
 	float angle = 0;
-    float wheelAngle = 0;
 
 	glfwSetTime(0);
 	while (!glfwWindowShouldClose(window)) //Tak długo jak okno nie powinno zostać zamknięte
 	{
 		angle += speed * glfwGetTime();
-        wheelAngle += -PI / 6 * glfwGetTime();
 		glfwSetTime(0);
         
         int frameBufferWidth, frameBufferHeight;
         glfwGetFramebufferSize(window, &frameBufferWidth, &frameBufferHeight);
         aspectRatio = static_cast<float>(frameBufferWidth) / frameBufferHeight;
 
-        drawScene(window, angle, wheelAngle);
+        drawScene(window, angle);
 
 		glfwPollEvents(); //Wykonaj procedury callback w zalezności od zdarzeń jakie zaszły.
-
-        
-
 	}
 
 	freeOpenGLProgram(window);

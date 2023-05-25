@@ -13,9 +13,11 @@ namespace Models {
 
     Temple::Temple() 
         :
-        Model("./model/temple_one_mesh_2.obj"),
+        Model("./model/temple_final2.obj"),
         stairs("./model/schody.obj"),
-        bunny("./model/bunny2.obj")
+        bunny("./model/bunny2.obj"),
+        templeFloor("./model/floor_final.obj"),
+        floor("./model/floor_final2.obj", 10.f)
     {
     }
 
@@ -24,20 +26,34 @@ namespace Models {
     }
     void Temple::drawTextured(ShaderProgram * sp, GLuint texture)
     {
-        //M = glm::mat4(1.0f);
         Model::drawTextured(sp, texture);
-        stairs.M = M;
-        stairs.V = V;
-        stairs.P = P;
-
-        //M = glm::rotate(M, angle, glm::vec3(0.0f, 1.0f, 0.0f));
-
 
         drawStairs(sp, texture);
         drawBunny(sp, texture);
+        drawFloor(sp, texture);
+        drawTempleFloor(sp, texture);
+    }
+    void Temple::drawTempleFloor(ShaderProgram * sp, GLuint texture)
+    {
+        templeFloor.M = M;
+        templeFloor.V = V;
+        templeFloor.P = P;
+        templeFloor.drawTextured(sp, clayTexture);
+    }
+    void Temple::drawFloor(ShaderProgram * sp, GLuint texture)
+    {
+        floor.M = M;
+        floor.V = V;
+        floor.P = P;
+
+        floor.M = glm::translate(floor.M, glm::vec3(0.f, 0.01f, 0.0f));
+        floor.drawTextured(sp, grassTexture);
     }
     void Temple::drawStairs(ShaderProgram * sp, GLuint texture)
     {
+        stairs.M = M;
+        stairs.V = V;
+        stairs.P = P;
         stairs.drawTextured(sp, texture);
     }
     void Temple::drawBunny(ShaderProgram * sp, GLuint texture)
