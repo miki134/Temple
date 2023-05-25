@@ -26,11 +26,16 @@ Place, Fifth Floor, Boston, MA  02110 - 1301  USA
 #include <glm/glm.hpp>
 #include <GLFW/glfw3.h>
 #include "constants.h"
+#include "shaderprogram.h"
 
 namespace Models {
 
 	class Model {
 		public:
+            Model();
+            Model(std::string filename);
+            virtual ~Model() = default;
+
 			int vertexCount;
 			float *vertices;
 			float *normals;
@@ -38,8 +43,24 @@ namespace Models {
 			float *texCoords;
 			float *colors;
 
-			virtual void drawSolid(bool smooth)=0;
+            unsigned int meshesNumber;
+            std::vector<std::vector<glm::vec4>> internalVertices;
+            std::vector<std::vector<glm::vec4>> internalNormals;
+            std::vector<std::vector<glm::vec2>> internalTexCoords;
+
+            std::vector<glm::vec4> oneMeshInternalVertices;
+            std::vector<glm::vec4> oneMeshInternalNormals;
+            std::vector<glm::vec2> oneMeshInternalTexCoords;
+
+            virtual void drawSolid(bool smooth = false) {};
 			virtual void drawWire(bool smooth=false);
+
+            virtual void drawSolid(ShaderProgram* sp, GLuint texture);
+            virtual void drawTextured(ShaderProgram* sp, GLuint texture);
+            virtual void drawAllInOneMesh(ShaderProgram* sp, GLuint texture);
+
+    protected:
+            virtual void initOBJ(std::string filename);
 	};
 }
 
