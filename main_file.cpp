@@ -495,7 +495,7 @@ void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
     glUniformMatrix4fv(sp->u("P"), 1, false, glm::value_ptr(P));
     glUniformMatrix4fv(sp->u("V"), 1, false, glm::value_ptr(V));
     glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M));
-    Models::temple.testDraw(sp, tex);
+    Models::temple.drawTextured(sp, tex);
 
     //checkError();
     //glEnableVertexAttribArray(spSimplest->a("vertex")); //Enable sending data to the attribute vertex

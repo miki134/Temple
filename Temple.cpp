@@ -13,7 +13,7 @@ namespace Models {
 
     Temple::Temple()
     {
-        std::string filename = "./model/schody.obj";
+        std::string filename = "./model/temple_one_mesh_2.obj";
 
         Assimp::Importer importer;
         const aiScene* scene = importer.ReadFile(filename, aiProcess_Triangulate | aiProcess_FlipUVs);
