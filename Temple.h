@@ -12,6 +12,7 @@ namespace Models {
         virtual ~Temple();
 
         virtual void drawTextured(ShaderProgram* sp, GLuint texture);
+        GLuint bunnyTexture;
 
     private:
         Model stairs;

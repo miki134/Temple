@@ -51,6 +51,6 @@ namespace Models {
         bunny.M = glm::rotate(bunny.M, angle, glm::vec3(0.0f, 2.0f, 0.0f));
         bunny.M = glm::scale(bunny.M, glm::vec3(2.0f, 2.0f, 2.0f));
         //M = glm::rotate(M, angle, glm::vec3(0.0f, 1.0f, 0.0f));
-        bunny.drawTextured(sp, texture);
+        bunny.drawTextured(sp, bunnyTexture);
     }
 }

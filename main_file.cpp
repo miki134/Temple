@@ -191,6 +191,7 @@ void mouseCallback(GLFWwindow* window, double xpos, double ypos)
 }
 
 GLuint tex;
+GLuint tex1;
 
 GLuint readTexture(const char* filename) {
     GLuint tex;
@@ -248,12 +249,14 @@ void initOpenGLProgram(GLFWwindow* window) {
 	glfwSetKeyCallback(window, key_callback);
     glfwSetCursorPosCallback(window, mouseCallback);
     tex = readTexture("dirt.png");
+    tex1 = readTexture("fur.png");
 }
 
 //Zwolnienie zasobów zajętych przez program
 void freeOpenGLProgram(GLFWwindow* window) {
 	freeShaders();
     glDeleteTextures(1, &tex);
+    glDeleteTextures(1, &tex1);
 }
 //float* vertices = myCubeVertices;
 //float* texCoords = myCubeTexCoords;
@@ -491,9 +494,11 @@ void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
 
     sp->use();
     Models::temple.M = glm::mat4(1.0f);
+    Models::temple.M = glm::scale(Models::temple.M, glm::vec3(3.0f, 3.0f, 3.0f));
     Models::temple.V = glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
     Models::temple.P = glm::perspective(glm::radians(fov), aspectRatio, nearClip, farClip);
     Models::temple.angle = angle;
+    Models::temple.bunnyTexture = tex1;
     Models::temple.drawTextured(sp, tex);
 
     glfwSwapBuffers(window);
@@ -515,12 +520,12 @@ int main(void)
     int screenWidth = mode->width;
     int screenHeight = mode->height;
 
-	//window = glfwCreateWindow(500, 500, "OpenGL", NULL, NULL);
-	//window = glfwCreateWindow(screenWidth, screenHeight, "OpenGL", NULL, NULL);
-    window = glfwCreateWindow(500, 500, "OpenGL", NULL, NULL);  //Utwórz okno 500x500 o tytule "OpenGL" i kontekst OpenGL.
+	window = glfwCreateWindow(500, 500, "OpenGL", NULL, NULL);
+	window = glfwCreateWindow(screenWidth, screenHeight, "OpenGL", NULL, NULL);
+    //window = glfwCreateWindow(500, 500, "OpenGL", NULL, NULL);  //Utwórz okno 500x500 o tytule "OpenGL" i kontekst OpenGL.
 
-    //glfwSetWindowMonitor(window, monitor, 0, 0, screenWidth, screenHeight, mode->refreshRate);
-    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetWindowMonitor(window, monitor, 0, 0, screenWidth, screenHeight, mode->refreshRate);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	if (!window)
 	{
