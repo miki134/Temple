@@ -46,7 +46,7 @@ float rotateSpeed = 2.50f;
 float cameraYaw = 0.0f;
 float cameraPitch = 0.0f;
 
-glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, -20.0f);
+glm::vec3 cameraPosition = glm::vec3(0.0f, 2.0f, -20.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, 1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
@@ -275,6 +275,8 @@ void drawScene(GLFWwindow* window, float angle) {
     sp->use();
     Models::temple.M = glm::mat4(1.0f);
     Models::temple.M = glm::scale(Models::temple.M, glm::vec3(3.0f, 3.0f, 3.0f));
+
+    cameraPosition = glm::vec3(cameraPosition.x, 2.0f, cameraPosition.z);
     Models::temple.V = glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
     Models::temple.P = glm::perspective(glm::radians(fov), aspectRatio, nearClip, farClip);
     Models::temple.angle = angle;

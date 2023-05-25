@@ -16,7 +16,7 @@ namespace Models {
         Model("./model/temple_final2.obj"),
         stairs("./model/schody.obj"),
         bunny("./model/bunny2.obj"),
-        templeFloor("./model/floor_final.obj"),
+        templeFloor("./model/podloga_2.obj"),
         floor("./model/floor_final2.obj", 10.f)
     {
     }
