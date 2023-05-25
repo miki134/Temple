@@ -15,8 +15,10 @@ namespace Models {
 
     private:
         Model stairs;
+        Model bunny;
 
         void drawStairs(ShaderProgram* sp, GLuint texture);
+        void drawBunny(ShaderProgram* sp, GLuint texture);
     };
 
     extern Temple temple;

@@ -438,7 +438,6 @@ void checkError()
 void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    //checkError();
 
     if (moveForward)
         cameraPosition += cameraSpeed * cameraFront;
@@ -463,12 +462,12 @@ void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
         cameraPitch -= rotateSpeed;
 
     // Ograniczenie zakresu kątów
-    /*if (cameraPitch > 89.0f)
+    if (cameraPitch > 89.0f)
         cameraPitch = 89.0f;
     if (cameraPitch < -89.0f)
-        cameraPitch = -89.0f;*/
+        cameraPitch = -89.0f;
 
-        // Aktualizacja wektora kierunku kamery
+    // Aktualizacja wektora kierunku kamery
     glm::vec3 front;
     front.x = cos(glm::radians(cameraYaw)) * cos(glm::radians(cameraPitch));
     front.y = sin(glm::radians(cameraPitch));
@@ -491,27 +490,11 @@ void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
 
     ShaderProgram *sp = spSimplest;
 
-    sp->use();//Aktywacja programu cieniującego
+    sp->use();
     glUniformMatrix4fv(sp->u("P"), 1, false, glm::value_ptr(P));
     glUniformMatrix4fv(sp->u("V"), 1, false, glm::value_ptr(V));
     glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M));
     Models::temple.drawTextured(sp, tex);
-
-    //checkError();
-    //glEnableVertexAttribArray(spSimplest->a("vertex")); //Enable sending data to the attribute vertex
-    //glVertexAttribPointer(spSimplest->a("vertex"), 4, GL_FLOAT, false, 0, vertices); //Specify source of the data for the attribute vertex
-
-    //glEnableVertexAttribArray(spSimplest->a("color")); //Enable sending data to the attribute color
-    //glVertexAttribPointer(spSimplest->a("color"), 4, GL_FLOAT, false, 0, colors); //Specify source of the data for the attribute color
-
-    //glEnableVertexAttribArray(spSimplest->a("normal")); //Enable sending data to the attribute color
-    //glVertexAttribPointer(spSimplest->a("normal"), 4, GL_FLOAT, false, 0, normals); //Specify source of the data for the attribute normal
-
-    //glDrawArrays(GL_TRIANGLES, 0, vertexCount); //Draw the object
-
-    //glDisableVertexAttribArray(spSimplest->a("vertex")); //Disable sending data to the attribute vertex
-    //glDisableVertexAttribArray(spSimplest->a("color")); //Disable sending data to the attribute color
-    //glDisableVertexAttribArray(spSimplest->a("normal")); //Disable sending data to the attribute normal
 
     glfwSwapBuffers(window);
 }
