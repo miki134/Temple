@@ -18,9 +18,10 @@
 #include <assimp/scene.h>
 #include "myTeapot.h"
 #include "myCube.h"
+#include "model.h"
 #include <iostream>
 
-bool freeCamera = false;
+bool freeCamera = true;
 
 float speed = 1;
 float turn = 0;
@@ -159,6 +160,7 @@ GLuint tex;
 GLuint tex1;
 GLuint tex2;
 GLuint tex3;
+GLuint tex4;
 
 GLuint readTexture(const char* filename) {
     GLuint tex;
@@ -229,6 +231,7 @@ void initOpenGLProgram(GLFWwindow* window) {
     tex1 = readTexture("fur.png");
     tex2 = readTexture("clay.png");
     tex3 = readTexture("grass.png");
+    tex4 = readTexture("sky.png");
     initCollision();
 }
 
@@ -239,6 +242,7 @@ void freeOpenGLProgram(GLFWwindow* window) {
     glDeleteTextures(1, &tex1);
     glDeleteTextures(1, &tex2);
     glDeleteTextures(1, &tex3);
+    glDeleteTextures(1, &tex4);
 }
 
 void checkError()
@@ -351,6 +355,7 @@ void drawScene(GLFWwindow* window, float angle) {
     Models::temple.bunnyTexture = tex1;
     Models::temple.clayTexture = tex2;
     Models::temple.grassTexture = tex3;
+    Models::temple.textureMap1 = tex4;
     Models::temple.drawTextured(sp, tex);
 
     glfwSwapBuffers(window);
@@ -372,11 +377,11 @@ int main(void)
     int screenWidth = mode->width;
     int screenHeight = mode->height;
 
-	//window = glfwCreateWindow(500, 500, "OpenGL", NULL, NULL);
+	//window = glfwCreateWindow(1000, 1000, "OpenGL", NULL, NULL);
 	window = glfwCreateWindow(screenWidth, screenHeight, "OpenGL", NULL, NULL);
 
-    glfwSetWindowMonitor(window, monitor, 0, 0, screenWidth, screenHeight, mode->refreshRate);
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    //glfwSetWindowMonitor(window, monitor, 0, 0, screenWidth, screenHeight, mode->refreshRate);
+    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	if (!window)
 	{

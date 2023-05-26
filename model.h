@@ -68,6 +68,8 @@ namespace Models {
 
             float textureMultiplier = 1.0;
 
+            GLuint textureMap1;
+
     protected:
             virtual void initOBJ(std::string filename);
 	};

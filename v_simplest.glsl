@@ -1,8 +1,8 @@
 #version 330
 
-uniform mat4 P;
-uniform mat4 V;
-uniform mat4 M;
+uniform mat4 P; //projekcja
+uniform mat4 V; //view
+uniform mat4 M; //model
 
 in vec4 vertex;
 in vec4 color;

@@ -38,6 +38,7 @@ namespace Models {
         templeFloor.M = M;
         templeFloor.V = V;
         templeFloor.P = P;
+        templeFloor.textureMap1 = textureMap1;
         templeFloor.drawTextured(sp, clayTexture);
     }
     void Temple::drawFloor(ShaderProgram * sp, GLuint texture)
@@ -45,6 +46,7 @@ namespace Models {
         floor.M = M;
         floor.V = V;
         floor.P = P;
+        floor.textureMap1 = textureMap1;
 
         floor.M = glm::translate(floor.M, glm::vec3(0.f, 0.01f, 0.0f));
         floor.drawTextured(sp, grassTexture);
@@ -54,6 +56,8 @@ namespace Models {
         stairs.M = M;
         stairs.V = V;
         stairs.P = P;
+        stairs.textureMap1 = textureMap1;
+
         stairs.drawTextured(sp, texture);
     }
     void Temple::drawBunny(ShaderProgram * sp, GLuint texture)
@@ -61,6 +65,8 @@ namespace Models {
         bunny.M = M;
         bunny.V = V;
         bunny.P = P;
+        //bunny.textureMap1 = textureMap1;
+
         bunny.angle = angle;
 
         bunny.M = glm::translate(bunny.M, glm::vec3(5.0f, -0.1f, -3.0f));

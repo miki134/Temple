@@ -99,9 +99,14 @@ namespace Models {
 
             //glUniform1f(sp->a("textureScale"), 1.0);
 
+
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, texture);
             glUniform1i(sp->u("tex"), 0);
+
+            glUniform1i(sp->u("textureMap1"), 1);
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_2D, textureMap1);
 
             glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 
