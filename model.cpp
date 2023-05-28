@@ -187,6 +187,7 @@ namespace Models {
             oneMeshInternalTexCoords.insert(oneMeshInternalTexCoords.end(), texCoords.begin(), texCoords.end());
         }
 
+        printf("Loaded %s", filename.c_str());
         printf("Read %d internalVertices\n", internalVertices.size());
         printf("Read %d internalNormals\n", internalNormals.size());
         printf("Read %d internalTexCoords\n", internalTexCoords.size());

@@ -21,7 +21,7 @@
 #include "model.h"
 #include <iostream>
 
-bool freeCamera = true;
+bool freeCamera = false;
 
 float speed = 1;
 float turn = 0;
@@ -380,8 +380,8 @@ int main(void)
 	//window = glfwCreateWindow(1000, 1000, "OpenGL", NULL, NULL);
 	window = glfwCreateWindow(screenWidth, screenHeight, "OpenGL", NULL, NULL);
 
-    //glfwSetWindowMonitor(window, monitor, 0, 0, screenWidth, screenHeight, mode->refreshRate);
-    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetWindowMonitor(window, monitor, 0, 0, screenWidth, screenHeight, mode->refreshRate); // full screen
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); //cursor disabled
 
 	if (!window)
 	{
