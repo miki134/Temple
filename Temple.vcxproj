@@ -47,16 +47,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
-    <None Include="./src/f_constant.glsl" />
-    <None Include="./src/f_lambert.glsl" />
-    <None Include="./src/f_lamberttextured.glsl" />
-    <None Include="./src/f_simplest.glsl" />
-    <None Include="./src/f_textured.glsl" />
-    <None Include="./src/v_constant.glsl" />
-    <None Include="./src/v_lambert.glsl" />
-    <None Include="./src/v_lamberttextured.glsl" />
-    <None Include="./src/v_simplest.glsl" />
-    <None Include="./src/v_textured.glsl" />
+    <None Include="./src/shaders/f_constant.glsl" />
+    <None Include="./src/shaders/f_lambert.glsl" />
+    <None Include="./src/shaders/f_lamberttextured.glsl" />
+    <None Include="./src/shaders/f_simplest.glsl" />
+    <None Include="./src/shaders/f_textured.glsl" />
+    <None Include="./src/shaders/v_constant.glsl" />
+    <None Include="./src/shaders/v_lambert.glsl" />
+    <None Include="./src/shaders/v_lamberttextured.glsl" />
+    <None Include="./src/shaders/v_simplest.glsl" />
+    <None Include="./src/shaders/v_textured.glsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
