@@ -227,11 +227,11 @@ void initOpenGLProgram(GLFWwindow* window) {
 	//glEnable(GL_DEPTH_TEST);
 	glfwSetKeyCallback(window, key_callback);
     glfwSetCursorPosCallback(window, mouseCallback);
-    tex = readTexture("dirt.png");
-    tex1 = readTexture("fur.png");
-    tex2 = readTexture("clay.png");
-    tex3 = readTexture("grass.png");
-    tex4 = readTexture("sky.png");
+    tex = readTexture("./res/dirt.png");
+    tex1 = readTexture("./res/fur.png");
+    tex2 = readTexture("./res/clay.png");
+    tex3 = readTexture("./res/grass.png");
+    tex4 = readTexture("./res/sky.png");
     initCollision();
 }
 
