@@ -19,52 +19,44 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="allmodels.h" />
-    <ClInclude Include="constants.h" />
-    <ClInclude Include="cube.h" />
-    <ClInclude Include="Draw.h" />
-    <ClInclude Include="lodepng.h" />
-    <ClInclude Include="model.h" />
-    <ClInclude Include="myCube.h" />
-    <ClInclude Include="myTeapot.h" />
-    <ClInclude Include="shaderprogram.h" />
-    <ClInclude Include="sphere.h" />
-    <ClInclude Include="teapot.h" />
-    <ClInclude Include="Temple.h" />
-    <ClInclude Include="torus.h" />
+    <ClInclude Include="./src/allmodels.h" />
+    <ClInclude Include="./src/constants.h" />
+    <ClInclude Include="./src/cube.h" />
+    <ClInclude Include="./src/Draw.h" />
+    <ClInclude Include="./src/lodepng.h" />
+    <ClInclude Include="./src/model.h" />
+    <ClInclude Include="./src/myCube.h" />
+    <ClInclude Include="./src/myTeapot.h" />
+    <ClInclude Include="./src/shaderprogram.h" />
+    <ClInclude Include="./src/sphere.h" />
+    <ClInclude Include="./src/teapot.h" />
+    <ClInclude Include="./src/Temple.h" />
+    <ClInclude Include="./src/torus.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="cube.cpp" />
-    <ClCompile Include="Draw.cpp" />
-    <ClCompile Include="lodepng.cpp" />
-    <ClCompile Include="main_file.cpp" />
-    <ClCompile Include="model.cpp" />
-    <ClCompile Include="shaderprogram.cpp" />
-    <ClCompile Include="sphere.cpp" />
-    <ClCompile Include="teapot.cpp" />
-    <ClCompile Include="Temple.cpp" />
-    <ClCompile Include="torus.cpp" />
+    <ClCompile Include="./src/cube.cpp" />
+    <ClCompile Include="./src/Draw.cpp" />
+    <ClCompile Include="./src/lodepng.cpp" />
+    <ClCompile Include="./src/main_file.cpp" />
+    <ClCompile Include="./src/model.cpp" />
+    <ClCompile Include="./src/shaderprogram.cpp" />
+    <ClCompile Include="./src/sphere.cpp" />
+    <ClCompile Include="./src/teapot.cpp" />
+    <ClCompile Include="./src/Temple.cpp" />
+    <ClCompile Include="./src/torus.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
-    <None Include="assimp-vc143-mt.dll" />
-    <None Include="f_constant.glsl" />
-    <None Include="f_lambert.glsl" />
-    <None Include="f_lamberttextured.glsl" />
-    <None Include="f_simplest.glsl" />
-    <None Include="f_textured.glsl" />
-    <None Include="glew32.dll1" />
-    <None Include="v_constant.glsl" />
-    <None Include="v_lambert.glsl" />
-    <None Include="v_lamberttextured.glsl" />
-    <None Include="v_simplest.glsl" />
-    <None Include="v_textured.glsl" />
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="assimp-vc143-mt.lib" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="gpl.txt" />
+    <None Include="./src/f_constant.glsl" />
+    <None Include="./src/f_lambert.glsl" />
+    <None Include="./src/f_lamberttextured.glsl" />
+    <None Include="./src/f_simplest.glsl" />
+    <None Include="./src/f_textured.glsl" />
+    <None Include="./src/v_constant.glsl" />
+    <None Include="./src/v_lambert.glsl" />
+    <None Include="./src/v_lamberttextured.glsl" />
+    <None Include="./src/v_simplest.glsl" />
+    <None Include="./src/v_textured.glsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -72,6 +64,7 @@
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>bioszkielet01win</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.22000.0</WindowsTargetPlatformVersion>
+    <ProjectName>Temple</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
